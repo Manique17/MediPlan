@@ -55,13 +55,17 @@ fun MediPlanApp(context: ComponentActivity) {
             LoginScreen(
                 onLoginClick = {
                     // Handle login action
-                    Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Login realizado com sucesso", Toast.LENGTH_SHORT).show()
                     // Navigate to home screen with bottom navigation
                     currentScreen = "home"
                 },
                 onSignUpClick = {
                     // Navigate to sign up screen
                     currentScreen = "signup"
+                },
+                onForgotPasswordClick = {
+                    // Navigate to forgot password screen
+                    currentScreen = "forgotpassword"
                 }
             )
         }
@@ -69,7 +73,7 @@ fun MediPlanApp(context: ComponentActivity) {
             SignUpScreen(
                 onSignUpClick = {
                     // Handle sign up action
-                    Toast.makeText(context, "Account created successfully", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Conta criada com sucesso", Toast.LENGTH_SHORT).show()
                     // Navigate back to login screen
                     currentScreen = "login"
                 },
@@ -83,7 +87,7 @@ fun MediPlanApp(context: ComponentActivity) {
             ForgotPasswordScreen(
                 onResetPasswordClick = {
                     // Handle reset password action
-                    Toast.makeText(context, "Password reset email sent", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Email de recuperação enviado", Toast.LENGTH_SHORT).show()
                 },
                 onBackToLoginClick = {
                     // Navigate back to login screen
@@ -97,5 +101,40 @@ fun MediPlanApp(context: ComponentActivity) {
                 onAccountDeleted = onAccountDeleted
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LoginScreenPreview() {
+    MediPlanTheme {
+        LoginScreen()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SignUpScreenPreview() {
+    MediPlanTheme {
+        SignUpScreen()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ForgotPasswordScreenPreview() {
+    MediPlanTheme {
+        ForgotPasswordScreen()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    MediPlanTheme {
+        HomeScreen(
+            onLogout = {},
+            onAccountDeleted = {}
+        )
     }
 }
