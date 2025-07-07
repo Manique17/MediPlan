@@ -2,12 +2,12 @@ package com.example.mediplan.RoomDB
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.LocalDate
 
 @Entity
-data class UserData(
+data class MedicationData(
     @PrimaryKey(autoGenerate = true)
-    val id:String,
-    val name:String,
-    val dateOfBirth:LocalDate
+    val id:Int,
+    val medName:String,
+    val description:String,
+    val dosage:String
 )

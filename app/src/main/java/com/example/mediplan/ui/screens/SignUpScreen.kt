@@ -46,7 +46,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mediplan.R
 import com.example.mediplan.model.User
-import com.example.mediplan.repository.UserRepository
 import com.example.mediplan.ui.components.AdaptiveOutlinedTextField
 import com.example.mediplan.ui.components.GradientButton
 import com.example.mediplan.ui.theme.LightBlue

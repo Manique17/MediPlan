@@ -59,8 +59,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.mediplan.model.Medication
 import com.example.mediplan.model.MedicationStatus
-import com.example.mediplan.repository.MedicationRepository
-import com.example.mediplan.repository.UserRepository
 import com.example.mediplan.ui.components.AdaptiveOutlinedTextField
 import com.example.mediplan.ui.components.GradientButton
 import com.example.mediplan.ui.theme.LightBlue

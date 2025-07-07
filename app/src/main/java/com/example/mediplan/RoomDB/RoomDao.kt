@@ -4,16 +4,20 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
+import com.example.mediplan.model.Medication
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RoomDao {
     @Upsert
-    suspend fun upsertUser(User: UserData)
+    suspend fun upsertMedication(medication: MedicationData)
     @Delete
-    suspend fun deleteUser(User: UserData)
+    suspend fun deleteMedication(medication: MedicationData)
 
-    @Query("SELECT * FROM UserData")
-    fun getAllNotes(): Flow<List<UserData>>
+    @Query("SELECT * FROM MedicationData")
+    fun getAllMedication(): Flow<List<MedicationData>>
+
+    @Upsert
+    suspend fun upsertUser(user: UserData)
 
 }
