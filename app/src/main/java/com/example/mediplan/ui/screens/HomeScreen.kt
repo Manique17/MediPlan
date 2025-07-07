@@ -1,6 +1,8 @@
 package com.example.mediplan.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +38,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -79,7 +82,8 @@ fun HomeScreen(
     var showAddMedication by remember { mutableStateOf(false) }
     
     // Get current user
-    val currentUser = userViewModel.currentUser.value
+    val currentUser by userViewModel.currentUser.collectAsState()
+
     val userId = currentUser?.id ?: "default-user"
     
     // Get medications for current user
@@ -291,9 +295,10 @@ fun MedicationTodayItem(medication: MedicationData) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = LightBlue.copy(alpha = 0.1f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+            .padding(vertical = 4.dp)
+            .border(width = 4.dp,LightGreen, RoundedCornerShape(16.dp))
+            .clickable { },
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
         Row(
             modifier = Modifier

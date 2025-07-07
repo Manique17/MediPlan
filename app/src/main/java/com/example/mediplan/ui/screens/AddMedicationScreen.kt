@@ -24,6 +24,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -239,10 +240,10 @@ fun AddMedicationScreen(
                                 .fillMaxWidth()
                                 .padding(bottom = 16.dp)
                         ) {
-                            AdaptiveOutlinedTextField(
+                            OutlinedTextField(
                                 value = frequency,
                                 onValueChange = {},
-                                readOnly = true,
+                                readOnly = true, // evita edição direta
                                 label = { Text("Frequência") },
                                 trailingIcon = {
                                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = frequencyExpanded)
@@ -251,7 +252,8 @@ fun AddMedicationScreen(
                                     .menuAnchor()
                                     .fillMaxWidth()
                             )
-                            
+
+
                             ExposedDropdownMenu(
                                 expanded = frequencyExpanded,
                                 onDismissRequest = { frequencyExpanded = false }
