@@ -62,10 +62,6 @@ fun MediPlanApp(context: ComponentActivity) {
                 onSignUpClick = {
                     // Navigate to sign up screen
                     currentScreen = "signup"
-                },
-                onForgotPasswordClick = {
-                    // Navigate to forgot password screen
-                    currentScreen = "forgotpassword"
                 }
             )
         }
@@ -101,40 +97,5 @@ fun MediPlanApp(context: ComponentActivity) {
                 onAccountDeleted = onAccountDeleted
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    MediPlanTheme {
-        LoginScreen()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SignUpScreenPreview() {
-    MediPlanTheme {
-        SignUpScreen()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ForgotPasswordScreenPreview() {
-    MediPlanTheme {
-        ForgotPasswordScreen()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    MediPlanTheme {
-        HomeScreen(
-            onLogout = {},
-            onAccountDeleted = {}
-        )
     }
 }
