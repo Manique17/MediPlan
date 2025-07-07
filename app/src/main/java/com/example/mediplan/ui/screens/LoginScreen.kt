@@ -1,5 +1,6 @@
 package com.example.mediplan.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -77,7 +78,10 @@ fun LoginScreen(
                 viewModel.resetLoginState()
             }
             is LoginState.Error -> {
-                errorMessage = loginState.message
+                if (loginState is LoginState.Error) {
+                    Log.d("LogginERROR","${(loginState as LoginState.Error).message}")
+                    val message = (loginState as LoginState.Error).message
+                }
             }
             else -> {
                 errorMessage = ""

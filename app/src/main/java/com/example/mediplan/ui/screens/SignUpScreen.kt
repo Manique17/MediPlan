@@ -112,7 +112,7 @@ fun SignUpScreen(
                 viewModel.resetSignUpState()
             }
             is SignUpState.Error -> {
-                errorMessage = signUpState.message
+                errorMessage = (signUpState as SignUpState.Error).message
             }
             else -> {
                 errorMessage = ""
