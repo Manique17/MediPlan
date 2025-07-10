@@ -446,6 +446,11 @@ fun MedicationsContent(medications: List<MedicationData>) {
 
 @Composable
 fun MedicationCard(medication: MedicationData) {
+    val context = LocalContext.current
+    val database = UserDatabase.getDatabase(context)
+    val repository = Repository(database.dao)
+    val viewModel = remember { MedicationViewModel(repository) }
+    
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = White),
@@ -514,6 +519,53 @@ fun MedicationCard(medication: MedicationData) {
                     fontSize = 12.sp,
                     color = Color.Gray
                 )
+            }
+            
+            // Action Buttons
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                androidx.compose.material3.OutlinedButton(
+                    onClick = {
+                        viewModel.markMedicationAsTaken(medication)
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = "Tomei",
+                        fontSize = 12.sp,
+                        color = LightGreen
+                    )
+                }
+                
+                androidx.compose.material3.OutlinedButton(
+                    onClick = {
+                        viewModel.markMedicationAsCompleted(medication)
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = "Concluir",
+                        fontSize = 12.sp,
+                        color = LightBlue
+                    )
+                }
+                
+                androidx.compose.material3.OutlinedButton(
+                    onClick = {
+                        viewModel.deleteMedication(medication)
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = "Remover",
+                        fontSize = 12.sp,
+                        color = Color.Red
+                    )
+                }
             }
         }
     }

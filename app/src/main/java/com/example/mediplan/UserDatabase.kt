@@ -30,7 +30,9 @@ abstract class UserDatabase : RoomDatabase() {
                     context.applicationContext,
                     UserDatabase::class.java,
                     "mediplan_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration() // For development - removes this in production
+                    .build()
                 INSTANCE = instance
                 instance
             }
