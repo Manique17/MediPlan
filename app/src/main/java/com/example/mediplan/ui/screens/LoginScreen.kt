@@ -51,8 +51,6 @@ import com.example.mediplan.ui.components.AdaptiveOutlinedTextField
 import com.example.mediplan.ui.components.GradientButton
 import com.example.mediplan.ui.theme.LightGreen
 import com.example.mediplan.ui.theme.White
-import com.example.mediplan.ui.theme.LightGreen
-import com.example.mediplan.ui.theme.White
 
 @Composable
 fun LoginScreen(
@@ -64,14 +62,14 @@ fun LoginScreen(
     val database = UserDatabase.getDatabase(context)
     val repository = Repository(database.dao)
     val viewModel = remember { UserViewModel(repository) }
-    
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-    
+
     val loginState by viewModel.loginState.collectAsState()
-    
+
     // Handle login state changes
     LaunchedEffect(loginState) {
         when (loginState) {
@@ -80,17 +78,16 @@ fun LoginScreen(
                 viewModel.resetLoginState()
             }
             is LoginState.Error -> {
-                if (loginState is LoginState.Error) {
-                    Log.d("LogginERROR","${(loginState as LoginState.Error).message}")
-                    val message = (loginState as LoginState.Error).message
-                }
+                val message = (loginState as LoginState.Error).message
+                Log.d("LogginERROR", message)
+                errorMessage = message
             }
             else -> {
                 errorMessage = ""
             }
         }
     }
-    
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -111,7 +108,7 @@ fun LoginScreen(
                     .size(120.dp)
                     .padding(bottom = 16.dp)
             )
-            
+
             Text(
                 text = "MediPlan",
                 fontSize = 32.sp,
@@ -119,7 +116,7 @@ fun LoginScreen(
                 color = LightGreen,
                 modifier = Modifier.padding(bottom = 32.dp)
             )
-            
+
             // Login Form
             Card(
                 modifier = Modifier
@@ -141,7 +138,7 @@ fun LoginScreen(
                         color = Color.DarkGray,
                         modifier = Modifier.padding(bottom = 24.dp)
                     )
-                    
+
                     // Email Field
                     AdaptiveOutlinedTextField(
                         value = email,
@@ -156,7 +153,7 @@ fun LoginScreen(
                         ),
                         singleLine = true
                     )
-                    
+
                     // Password Field
                     AdaptiveOutlinedTextField(
                         value = password,
@@ -182,7 +179,7 @@ fun LoginScreen(
                             }
                         }
                     )
-                    
+
                     // Forgot Password
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -196,7 +193,7 @@ fun LoginScreen(
                             )
                         }
                     }
-                    
+
                     // Error Message
                     if (errorMessage.isNotEmpty()) {
                         Text(
@@ -206,7 +203,7 @@ fun LoginScreen(
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
                     }
-                    
+
                     // Login Button
                     GradientButton(
                         text = if (loginState is LoginState.Loading) "LOGGING IN..." else "LOGIN",
@@ -222,7 +219,7 @@ fun LoginScreen(
                             .height(50.dp)
                             .clip(RoundedCornerShape(25.dp))
                     )
-                    
+
                     // Loading indicator
                     if (loginState is LoginState.Loading) {
                         CircularProgressIndicator(
@@ -232,7 +229,7 @@ fun LoginScreen(
                     }
                 }
             }
-            
+
             // Sign Up Section
             Row(
                 modifier = Modifier
@@ -246,7 +243,7 @@ fun LoginScreen(
                     color = Color.Black,
                     fontSize = 14.sp
                 )
-                
+
                 TextButton(onClick = onSignUpClick) {
                     Text(
                         text = "Sign Up",

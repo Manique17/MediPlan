@@ -55,9 +55,6 @@ import com.example.mediplan.ViewModel.Repository
 import com.example.mediplan.ui.theme.LightBlue
 import com.example.mediplan.ui.theme.LightGreen
 import com.example.mediplan.ui.theme.White
-import com.example.mediplan.ui.theme.LightBlue
-import com.example.mediplan.ui.theme.LightGreen
-import com.example.mediplan.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

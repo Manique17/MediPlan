@@ -3,9 +3,9 @@ package com.example.mediplan.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // Light Theme Colors
-val LightGreen = Color(0xFF8BC34A)
-val LightBlue = Color(0xFF03A9F4)
-val White = Color(0xFFFFFFFF)
+val LightGreen = Color(0xFF90EE90) // Você já tem esta
+val White = Color.White         // E esta
+val LightBlue = Color(0xFFADD8E6)
 val LightGreenVariant = Color(0xFF689F38)
 val LightBlueVariant = Color(0xFF0288D1)
 
