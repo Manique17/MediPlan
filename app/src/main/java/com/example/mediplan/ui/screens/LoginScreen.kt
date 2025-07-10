@@ -143,7 +143,8 @@ fun LoginScreen(
                     AdaptiveOutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
-                        label = { Text("Email") },
+                        label = { Text("Email", color = Color.Black) },
+                        placeholder = { Text("Enter your email", color = Color.Black) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 16.dp),
@@ -151,14 +152,17 @@ fun LoginScreen(
                             keyboardType = KeyboardType.Email,
                             imeAction = ImeAction.Next
                         ),
-                        singleLine = true
+                        singleLine = true,
+                        textColor = Color.Black // <-- Define cor preta para o texto digitado
                     )
 
                     // Password Field
                     AdaptiveOutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
-                        label = { Text("Password") },
+                        label = { Text("Password", color = Color.Black) },
+                        placeholder = { Text("Enter your password", color = Color.Black) },
+                        textColor = Color.Black, // <-- Define cor preta para o texto digitado
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 8.dp),

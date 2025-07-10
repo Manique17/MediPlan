@@ -5,16 +5,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "medication_history")
 data class MedicationHistoryData(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-    val medName: String,
-    val description: String,
-    val dosage: String,
-    val frequency: String,
-    val startDate: String,
-    val endDate: String,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val userId: String,
-    val actionType: String, // "TAKEN", "DELETED", "COMPLETED"
-    val actionDate: String, // Data quando a ação foi realizada
-    val notes: String = "" // Notas adicionais
+    val medName: String,
+    val action: String, // exemplo: "taken", "completed", "removed"
+    val date: String
 )
+

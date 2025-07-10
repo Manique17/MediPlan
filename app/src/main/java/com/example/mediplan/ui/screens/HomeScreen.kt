@@ -182,10 +182,11 @@ fun HomeScreen(
                         userId = userId,
                         onViewFullHistory = { showHistory = true }
                     )
-                    3 -> SettingsContent(
+                    3 -> SettingsScreen(
+                        userName = currentUser?.name ?: "Usuário",
+                        onChangePassword = { /* TODO: Implementar ação de mudar palavra-passe */ },
                         onLogout = onLogout,
-                        onAccountDeleted = onAccountDeleted,
-                        userName = currentUser?.name ?: "Usuário"
+                        onDeleteAccount = onAccountDeleted
                     )
                 }
             }
@@ -659,56 +660,12 @@ fun HistoryContent(
             }
         } else {
             items(recentHistory.take(5)) { historyItem ->
-                com.example.mediplan.ui.screens.HistoryCard(historyItem = historyItem)
+                HistoryCard(historyItem = historyItem)
             }
         }
     }
 }
 
-@Composable
-fun SettingsContent(
-    onLogout: () -> Unit,
-    onAccountDeleted: () -> Unit,
-    userName: String
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Configurações",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = LightGreen,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-        
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = White),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Text(
-                    text = "Usuário: $userName",
-                    fontSize = 16.sp,
-                    color = Color.DarkGray,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-                
-                Text(
-                    text = "Gerencie sua conta e preferências",
-                    fontSize = 14.sp,
-                    color = Color.Gray
-                )
-            }
-        }
-    }
-}
 
 // Helper functions
 fun getTodayMedications(medications: List<MedicationData>): List<MedicationData> {

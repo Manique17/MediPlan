@@ -1,7 +1,9 @@
 package com.example.mediplan.ui.screens
 
+import android.app.DatePickerDialog
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,9 +29,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import java.util.Calendar
+import java.util.Locale
+import androidx.compose.foundation.clickable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,8 +56,6 @@ import com.example.mediplan.ViewModel.SignUpState
 import com.example.mediplan.ViewModel.UserViewModel
 import com.example.mediplan.ui.components.AdaptiveOutlinedTextField
 import com.example.mediplan.ui.components.GradientButton
-import com.example.mediplan.ui.theme.LightGreen
-import com.example.mediplan.ui.theme.White
 import com.example.mediplan.ui.theme.LightGreen
 import com.example.mediplan.ui.theme.White
 
@@ -92,9 +95,7 @@ fun SignUpScreen(
     val database = UserDatabase.getDatabase(context)
     val repository = Repository(database.dao)
     val viewModel = remember { UserViewModel(repository) }
-    
     val scrollState = rememberScrollState()
-    
     var fullName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var birthdateText by remember { mutableStateOf("") }
@@ -103,7 +104,25 @@ fun SignUpScreen(
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
-    
+    val yearMax = 2009
+    val monthMax = 11 // Dezembro (0-based)
+    val dayMax = 31
+    val datePickerDialog = remember {
+        DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                birthdateText = String.format(Locale.getDefault(), "%02d/%02d/%04d", month + 1, dayOfMonth, year)
+            },
+            yearMax, 0, 1
+        ).apply {
+            datePicker.maxDate = Calendar.getInstance().apply {
+                set(Calendar.YEAR, yearMax)
+                set(Calendar.MONTH, monthMax)
+                set(Calendar.DAY_OF_MONTH, dayMax)
+            }.timeInMillis
+        }
+    }
+
     val signUpState by viewModel.signUpState.collectAsState()
     
     // Handle sign up state changes
@@ -177,7 +196,7 @@ fun SignUpScreen(
                     AdaptiveOutlinedTextField(
                         value = fullName,
                         onValueChange = { fullName = it },
-                        label = { Text("Full Name") },
+                        label = { Text("Full Name", color = Color.Black) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 16.dp),
@@ -185,14 +204,15 @@ fun SignUpScreen(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Next
                         ),
-                        singleLine = true
+                        singleLine = true,
+                        textColor = Color.Black
                     )
                     
                     // Email Field
                     AdaptiveOutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
-                        label = { Text("Email") },
+                        label = { Text("Email", color = Color.Black) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 16.dp),
@@ -200,44 +220,41 @@ fun SignUpScreen(
                             keyboardType = KeyboardType.Email,
                             imeAction = ImeAction.Next
                         ),
-                        singleLine = true
+                        singleLine = true,
+                        textColor = Color.Black
                     )
                     
                     // Birthdate Field
-                    AdaptiveOutlinedTextField(
-                        value = birthdateText,
-                        onValueChange = { newValue -> 
-                            val filtered = newValue.filter { it.isDigit() }.take(8)
-                            
-                            birthdateText = when {
-                                filtered.length > 4 -> "${filtered.take(2)}/${filtered.substring(2, 4)}/${filtered.substring(4)}"
-                                filtered.length > 2 -> "${filtered.take(2)}/${filtered.substring(2)}"
-                                else -> filtered
-                            }
-                        },
-                        label = { Text("Birthdate (MM/DD/YYYY)") },
-                        placeholder = { Text("Example: 01/31/2000") },
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .clickable { datePickerDialog.show() }
                             .padding(bottom = 16.dp),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
-                        ),
-                        singleLine = true,
-                        isError = !isValidBirthdate(birthdateText),
-                        supportingText = {
-                            if (!isValidBirthdate(birthdateText)) {
-                                Text("Please enter a valid date", color = Color.Red)
-                            }
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = if (birthdateText.isNotEmpty()) {
+                                // Mostra no formato dia/mes/ano
+                                val parts = birthdateText.split("/")
+                                if (parts.size == 3) "${parts[1]}/${parts[0]}/${parts[2]}" else birthdateText
+                            } else "Birthdate (DD/MM/YYYY)",
+                            color = if (birthdateText.isNotEmpty()) Color.Black else Color.Gray,
+                            modifier = Modifier.weight(1f)
+                        )
+                        IconButton(onClick = { datePickerDialog.show() }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_calendar),
+                                contentDescription = "Select date",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
                         }
-                    )
-                    
+                    }
+
                     // Password Field
                     AdaptiveOutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
-                        label = { Text("Password") },
+                        label = { Text("Password", color = Color.Black) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 16.dp),
@@ -257,14 +274,15 @@ fun SignUpScreen(
                                     tint = MaterialTheme.colorScheme.onSurface
                                 )
                             }
-                        }
+                        },
+                        textColor = Color.Black
                     )
                     
                     // Confirm Password Field
                     AdaptiveOutlinedTextField(
                         value = confirmPassword,
                         onValueChange = { confirmPassword = it },
-                        label = { Text("Confirm Password") },
+                        label = { Text("Confirm Password", color = Color.Black) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 16.dp),
@@ -284,7 +302,8 @@ fun SignUpScreen(
                                     tint = MaterialTheme.colorScheme.onSurface
                                 )
                             }
-                        }
+                        },
+                        textColor = Color.Black
                     )
                     
                     // Error Message

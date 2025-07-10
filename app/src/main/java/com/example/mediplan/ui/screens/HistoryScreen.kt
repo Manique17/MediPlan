@@ -66,22 +66,22 @@ fun HistoryScreen(
     val database = UserDatabase.getDatabase(context)
     val repository = Repository(database.dao)
     val viewModel = remember { MedicationViewModel(repository) }
-    
+
     var selectedFilter by remember { mutableStateOf("ALL") }
-    
+
     // Get history based on filter
     val allHistory by viewModel.getMedicationHistoryByUser(userId).observeAsState(emptyList())
     val takenHistory by viewModel.getMedicationHistoryByUserAndType(userId, "TAKEN").observeAsState(emptyList())
     val deletedHistory by viewModel.getMedicationHistoryByUserAndType(userId, "DELETED").observeAsState(emptyList())
     val completedHistory by viewModel.getMedicationHistoryByUserAndType(userId, "COMPLETED").observeAsState(emptyList())
-    
+
     val displayHistory = when (selectedFilter) {
         "TAKEN" -> takenHistory
         "DELETED" -> deletedHistory
         "COMPLETED" -> completedHistory
         else -> allHistory
     }
-    
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -110,7 +110,7 @@ fun HistoryScreen(
                 containerColor = LightGreen
             )
         )
-        
+
         // Filter Chips
         Row(
             modifier = Modifier
@@ -155,7 +155,7 @@ fun HistoryScreen(
                 )
             )
         }
-        
+
         // History List
         if (displayHistory.isEmpty()) {
             Box(
@@ -197,7 +197,7 @@ fun HistoryScreen(
                 items(displayHistory) { historyItem ->
                     HistoryCard(historyItem = historyItem)
                 }
-                
+
                 item {
                     Spacer(modifier = Modifier.height(16.dp))
                 }
@@ -208,114 +208,35 @@ fun HistoryScreen(
 
 @Composable
 fun HistoryCard(historyItem: MedicationHistoryData) {
-    val icon: ImageVector
-    val iconColor: Color
-    val actionText: String
-    val actionColor: Color
-    
-    when (historyItem.actionType) {
-        "TAKEN" -> {
-            icon = Icons.Default.CheckCircle
-            iconColor = LightGreen
-            actionText = "Tomado"
-            actionColor = LightGreen
-        }
-        "DELETED" -> {
-            icon = Icons.Default.Delete
-            iconColor = Color.Red
-            actionText = "Removido"
-            actionColor = Color.Red
-        }
-        "COMPLETED" -> {
-            icon = Icons.Default.MedicalServices
-            iconColor = LightBlue
-            actionText = "Concluído"
-            actionColor = LightBlue
-        }
-        else -> {
-            icon = Icons.Default.MedicalServices
-            iconColor = Color.Gray
-            actionText = "Desconhecido"
-            actionColor = Color.Gray
-        }
-    }
-    
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = RoundedCornerShape(12.dp)
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Action Icon
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(iconColor.copy(alpha = 0.1f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    icon,
-                    contentDescription = actionText,
-                    tint = iconColor,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-            
-            Spacer(modifier = Modifier.width(16.dp))
-            
-            // Medication Info
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = historyItem.medName,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.DarkGray
-                )
-                
-                Text(
-                    text = "${historyItem.dosage} - ${historyItem.frequency}",
-                    fontSize = 14.sp,
-                    color = Color.Gray,
-                    modifier = Modifier.padding(top = 2.dp)
-                )
-                
-                if (historyItem.notes.isNotEmpty()) {
-                    Text(
-                        text = historyItem.notes,
-                        fontSize = 12.sp,
-                        color = Color.Gray,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
-                }
-                
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = actionText,
-                        fontSize = 12.sp,
-                        color = actionColor,
-                        fontWeight = FontWeight.Medium
-                    )
-                    
-                    Text(
-                        text = historyItem.actionDate,
-                        fontSize = 12.sp,
-                        color = Color.Gray
-                    )
-                }
-            }
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = historyItem.medName,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.DarkGray
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = when (historyItem.action) {
+                    "taken" -> "Medicamento tomado"
+                    "completed" -> "Tratamento concluído"
+                    "removed" -> "Medicamento removido"
+                    else -> historyItem.action
+                },
+                fontSize = 14.sp,
+                color = Color.Gray
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Data: ${historyItem.date}",
+                fontSize = 12.sp,
+                color = Color.Gray
+            )
         }
     }
 }

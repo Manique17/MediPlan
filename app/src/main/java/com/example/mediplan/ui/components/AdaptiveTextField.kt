@@ -1,6 +1,5 @@
 package com.example.mediplan.ui.components
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -26,12 +25,13 @@ fun AdaptiveOutlinedTextField(
     singleLine: Boolean = false,
     maxLines: Int = Int.MAX_VALUE,
     trailingIcon: @Composable (() -> Unit)? = null,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    textColor: Color? = null // <-- Adicionado parâmetro opcional para cor do texto
 ) {
     val primaryColor = MaterialTheme.colorScheme.primary
     val onSurfaceColor = MaterialTheme.colorScheme.onSurface
     val errorColor = Color.Red
-    
+
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
@@ -51,8 +51,8 @@ fun AdaptiveOutlinedTextField(
             focusedLabelColor = primaryColor,
             unfocusedLabelColor = onSurfaceColor,
             cursorColor = primaryColor,
-            unfocusedTextColor = onSurfaceColor,
-            focusedTextColor = onSurfaceColor,
+            unfocusedTextColor = textColor ?: onSurfaceColor, // <-- Usa cor preta se fornecida
+            focusedTextColor = textColor ?: onSurfaceColor,   // <-- Usa cor preta se fornecida
             errorBorderColor = errorColor,
             errorLabelColor = errorColor,
             errorCursorColor = errorColor,
