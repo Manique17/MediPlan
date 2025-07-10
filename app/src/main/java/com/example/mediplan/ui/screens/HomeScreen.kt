@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Settings
@@ -80,6 +81,7 @@ fun HomeScreen(
     
     var selectedTab by remember { mutableStateOf(0) }
     var showAddMedication by remember { mutableStateOf(false) }
+    var showHistory by remember { mutableStateOf(false) }
     
     // Get current user
     val currentUser by userViewModel.currentUser.collectAsState()
@@ -94,6 +96,11 @@ fun HomeScreen(
             userId = userId,
             onBackClick = { showAddMedication = false },
             onMedicationAdded = { showAddMedication = false }
+        )
+    } else if (showHistory) {
+        HistoryScreen(
+            userId = userId,
+            onBackClick = { showHistory = false }
         )
     } else {
         Scaffold(
@@ -129,10 +136,16 @@ fun HomeScreen(
                         onClick = { selectedTab = 1 }
                     )
                     NavigationBarItem(
-                        icon = { Icon(Icons.Default.Settings, contentDescription = "Settings") },
-                        label = { Text("Configurações") },
+                        icon = { Icon(Icons.Default.History, contentDescription = "History") },
+                        label = { Text("Histórico") },
                         selected = selectedTab == 2,
                         onClick = { selectedTab = 2 }
+                    )
+                    NavigationBarItem(
+                        icon = { Icon(Icons.Default.Settings, contentDescription = "Settings") },
+                        label = { Text("Configurações") },
+                        selected = selectedTab == 3,
+                        onClick = { selectedTab = 3 }
                     )
                 }
             },
@@ -160,7 +173,11 @@ fun HomeScreen(
                 when (selectedTab) {
                     0 -> HomeContent(medications = medications, userName = currentUser?.name ?: "Usuário")
                     1 -> MedicationsContent(medications = medications)
-                    2 -> SettingsContent(
+                    2 -> HistoryContent(
+                        userId = userId,
+                        onViewFullHistory = { showHistory = true }
+                    )
+                    3 -> SettingsContent(
                         onLogout = onLogout,
                         onAccountDeleted = onAccountDeleted,
                         userName = currentUser?.name ?: "Usuário"
@@ -497,6 +514,95 @@ fun MedicationCard(medication: MedicationData) {
                     fontSize = 12.sp,
                     color = Color.Gray
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun HistoryContent(
+    userId: String,
+    onViewFullHistory: () -> Unit
+) {
+    val context = LocalContext.current
+    val database = UserDatabase.getDatabase(context)
+    val repository = Repository(database.dao)
+    val viewModel = remember { MedicationViewModel(repository) }
+    
+    val recentHistory by viewModel.getMedicationHistoryByUser(userId).observeAsState(emptyList())
+    
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Histórico Recente",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = LightGreen
+                )
+                
+                if (recentHistory.isNotEmpty()) {
+                    androidx.compose.material3.TextButton(
+                        onClick = onViewFullHistory
+                    ) {
+                        Text(
+                            text = "Ver Tudo",
+                            color = LightGreen,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
+            }
+        }
+        
+        if (recentHistory.isEmpty()) {
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = White),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(32.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            Icons.Default.History,
+                            contentDescription = "Sem histórico",
+                            modifier = Modifier.size(48.dp),
+                            tint = Color.Gray
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "Nenhum histórico encontrado",
+                            fontSize = 16.sp,
+                            color = Color.Gray,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Quando você tomar ou remover medicamentos, eles aparecerão aqui",
+                            fontSize = 14.sp,
+                            color = Color.Gray,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+        } else {
+            items(recentHistory.take(5)) { historyItem ->
+                HistoryCard(historyItem = historyItem)
             }
         }
     }

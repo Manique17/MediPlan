@@ -1,6 +1,7 @@
 package com.example.mediplan.ViewModel
 
 import com.example.mediplan.RoomDB.MedicationData
+import com.example.mediplan.RoomDB.MedicationHistoryData
 import com.example.mediplan.RoomDB.RoomDao
 import com.example.mediplan.RoomDB.UserData
 import kotlinx.coroutines.flow.Flow
@@ -59,5 +60,22 @@ class Repository(private val dao: RoomDao) {
     
     suspend fun deleteAllMedicationsForUser(userId: String) {
         dao.deleteAllMedicationsForUser(userId)
+    }
+    
+    // Medication History operations
+    suspend fun insertMedicationHistory(history: MedicationHistoryData) {
+        dao.insertMedicationHistory(history)
+    }
+    
+    fun getMedicationHistoryByUser(userId: String): Flow<List<MedicationHistoryData>> {
+        return dao.getMedicationHistoryByUser(userId)
+    }
+    
+    fun getMedicationHistoryByUserAndType(userId: String, actionType: String): Flow<List<MedicationHistoryData>> {
+        return dao.getMedicationHistoryByUserAndType(userId, actionType)
+    }
+    
+    suspend fun deleteAllHistoryForUser(userId: String) {
+        dao.deleteAllHistoryForUser(userId)
     }
 }

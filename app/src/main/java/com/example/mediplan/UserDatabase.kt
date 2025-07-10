@@ -7,11 +7,12 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.mediplan.RoomDB.Converters
 import com.example.mediplan.RoomDB.MedicationData
+import com.example.mediplan.RoomDB.MedicationHistoryData
 import com.example.mediplan.RoomDB.RoomDao
 import com.example.mediplan.RoomDB.UserData
 
 @Database(
-    entities = [UserData::class, MedicationData::class],
+    entities = [UserData::class, MedicationData::class, MedicationHistoryData::class],
     version = 1,
     exportSchema = false
 )

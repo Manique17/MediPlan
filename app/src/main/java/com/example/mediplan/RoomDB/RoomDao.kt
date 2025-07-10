@@ -50,4 +50,17 @@ interface RoomDao {
     
     @Query("DELETE FROM medications WHERE userId = :userId")
     suspend fun deleteAllMedicationsForUser(userId: String)
+    
+    // Medication History operations
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertMedicationHistory(history: MedicationHistoryData)
+    
+    @Query("SELECT * FROM medication_history WHERE userId = :userId ORDER BY actionDate DESC")
+    fun getMedicationHistoryByUser(userId: String): Flow<List<MedicationHistoryData>>
+    
+    @Query("SELECT * FROM medication_history WHERE userId = :userId AND actionType = :actionType ORDER BY actionDate DESC")
+    fun getMedicationHistoryByUserAndType(userId: String, actionType: String): Flow<List<MedicationHistoryData>>
+    
+    @Query("DELETE FROM medication_history WHERE userId = :userId")
+    suspend fun deleteAllHistoryForUser(userId: String)
 }
