@@ -18,10 +18,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.MedicalServices
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Settings
@@ -56,6 +60,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mediplan.RoomDB.MedicationData
+import com.example.mediplan.RoomDB.MedicationHistoryData
 import com.example.mediplan.UserDatabase
 import com.example.mediplan.ViewModel.MedicationViewModel
 import com.example.mediplan.ViewModel.Repository
@@ -655,6 +660,110 @@ fun HistoryContent(
         } else {
             items(recentHistory.take(5)) { historyItem ->
                 HistoryCard(historyItem = historyItem)
+            }
+        }
+    }
+}
+
+@Composable
+fun HistoryCard(historyItem: MedicationHistoryData) {
+    val icon: ImageVector
+    val iconColor: Color
+    val actionText: String
+    val actionColor: Color
+    
+    when (historyItem.actionType) {
+        "TAKEN" -> {
+            icon = Icons.Default.CheckCircle
+            iconColor = LightGreen
+            actionText = "Tomado"
+            actionColor = LightGreen
+        }
+        "DELETED" -> {
+            icon = Icons.Default.Delete
+            iconColor = Color.Red
+            actionText = "Removido"
+            actionColor = Color.Red
+        }
+        "COMPLETED" -> {
+            icon = Icons.Default.MedicalServices
+            iconColor = LightBlue
+            actionText = "Concluído"
+            actionColor = LightBlue
+        }
+        else -> {
+            icon = Icons.Default.MedicalServices
+            iconColor = Color.Gray
+            actionText = "Desconhecido"
+            actionColor = Color.Gray
+        }
+    }
+    
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Action Icon
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(iconColor.copy(alpha = 0.1f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    icon,
+                    contentDescription = actionText,
+                    tint = iconColor,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+            
+            Spacer(modifier = Modifier.width(12.dp))
+            
+            // Medication Info
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = historyItem.medName,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.DarkGray
+                )
+                
+                Text(
+                    text = historyItem.dosage,
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                )
+                
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = actionText,
+                        fontSize = 11.sp,
+                        color = actionColor,
+                        fontWeight = FontWeight.Medium
+                    )
+                    
+                    Text(
+                        text = historyItem.actionDate,
+                        fontSize = 11.sp,
+                        color = Color.Gray
+                    )
+                }
             }
         }
     }

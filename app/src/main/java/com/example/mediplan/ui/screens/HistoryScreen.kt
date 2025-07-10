@@ -208,31 +208,36 @@ fun HistoryScreen(
 
 @Composable
 fun HistoryCard(historyItem: MedicationHistoryData) {
-    val (icon, iconColor, actionText, actionColor) = when (historyItem.actionType) {
-        "TAKEN" -> Tuple4(
-            Icons.Default.CheckCircle,
-            LightGreen,
-            "Tomado",
-            LightGreen
-        )
-        "DELETED" -> Tuple4(
-            Icons.Default.Delete,
-            Color.Red,
-            "Removido",
-            Color.Red
-        )
-        "COMPLETED" -> Tuple4(
-            Icons.Default.MedicalServices,
-            LightBlue,
-            "Concluído",
-            LightBlue
-        )
-        else -> Tuple4(
-            Icons.Default.MedicalServices,
-            Color.Gray,
-            "Desconhecido",
-            Color.Gray
-        )
+    val icon: ImageVector
+    val iconColor: Color
+    val actionText: String
+    val actionColor: Color
+    
+    when (historyItem.actionType) {
+        "TAKEN" -> {
+            icon = Icons.Default.CheckCircle
+            iconColor = LightGreen
+            actionText = "Tomado"
+            actionColor = LightGreen
+        }
+        "DELETED" -> {
+            icon = Icons.Default.Delete
+            iconColor = Color.Red
+            actionText = "Removido"
+            actionColor = Color.Red
+        }
+        "COMPLETED" -> {
+            icon = Icons.Default.MedicalServices
+            iconColor = LightBlue
+            actionText = "Concluído"
+            actionColor = LightBlue
+        }
+        else -> {
+            icon = Icons.Default.MedicalServices
+            iconColor = Color.Gray
+            actionText = "Desconhecido"
+            actionColor = Color.Gray
+        }
     }
     
     Card(
@@ -314,9 +319,6 @@ fun HistoryCard(historyItem: MedicationHistoryData) {
         }
     }
 }
-
-// Helper data class for tuple
-data class Tuple4<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
 
 @Preview(showBackground = true)
 @Composable
