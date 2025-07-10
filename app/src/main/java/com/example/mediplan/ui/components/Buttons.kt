@@ -18,6 +18,9 @@ import androidx.compose.ui.unit.sp
 import com.example.mediplan.ui.theme.LightBlue
 import com.example.mediplan.ui.theme.LightGreen
 import com.example.mediplan.ui.theme.White
+import com.example.mediplan.ui.theme.LightBlue
+import com.example.mediplan.ui.theme.LightGreen
+import com.example.mediplan.ui.theme.White
 
 @Composable
 fun GradientButton(
