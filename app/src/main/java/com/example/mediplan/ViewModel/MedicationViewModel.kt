@@ -1,5 +1,7 @@
 package com.example.mediplan.ViewModel
 
+
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -14,18 +16,18 @@ import java.util.Calendar
 import java.util.Locale
 
 class MedicationViewModel(private val repository: Repository) : ViewModel() {
-    
+
     private val _medicationState = MutableStateFlow<MedicationState>(MedicationState.Idle)
     val medicationState: StateFlow<MedicationState> = _medicationState.asStateFlow()
-    
+
     fun getMedicationsByUser(userId: String) = repository.getMedicationsByUser(userId).asLiveData(viewModelScope.coroutineContext)
-    
+
     fun getAllMedications() = repository.getAllMedications().asLiveData(viewModelScope.coroutineContext)
-    
+
     fun getMedicationHistoryByUser(userId: String) = repository.getMedicationHistoryByUser(userId).asLiveData(viewModelScope.coroutineContext)
-    
+
     fun getMedicationHistoryByUserAndType(userId: String, actionType: String) = repository.getMedicationHistoryByUserAndType(userId, actionType).asLiveData(viewModelScope.coroutineContext)
-    
+
     fun insertMedication(medication: MedicationData) {
         viewModelScope.launch {
             try {
@@ -36,7 +38,7 @@ class MedicationViewModel(private val repository: Repository) : ViewModel() {
             }
         }
     }
-    
+
     fun updateMedication(medication: MedicationData) {
         viewModelScope.launch {
             try {
@@ -47,26 +49,36 @@ class MedicationViewModel(private val repository: Repository) : ViewModel() {
             }
         }
     }
-    
+
+    fun deleteHistoryItem(history: MedicationHistoryData) {
+        viewModelScope.launch {
+            try {
+                repository.deleteMedicationHistory(history)
+                _medicationState.value = MedicationState.Success("Histórico eliminado com sucesso")
+            } catch (e: Exception) {
+                _medicationState.value = MedicationState.Error(e.message ?: "Erro ao eliminar histórico")
+            }
+        }
+    }
+
     fun deleteMedication(medication: MedicationData) {
         viewModelScope.launch {
             try {
-                // Add to history before deleting
                 val currentDate = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Calendar.getInstance().time)
                 val history = MedicationHistoryData(
-                    medName = medication.medName,
-                    description = medication.description,
-                    dosage = medication.dosage,
-                    frequency = medication.frequency,
-                    startDate = medication.startDate,
-                    endDate = medication.endDate,
                     userId = medication.userId,
-                    actionType = "DELETED",
+                    medName = medication.medName,
+                    action = "DELETED",
                     actionDate = currentDate,
-                    notes = "Medicamento removido pelo usuário"
+                    description = medication.description ?: "",
+                    dosage = medication.dosage ?: "",
+                    frequency = medication.frequency ?: "",
+                    startDate = medication.startDate ?: "",
+                    endDate = medication.endDate ?: "",
+                    actionType = "DELETED",
+                    notes = ""
                 )
                 repository.insertMedicationHistory(history)
-                
                 repository.deleteMedication(medication)
                 _medicationState.value = MedicationState.Success("Medication deleted successfully")
             } catch (e: Exception) {
@@ -74,22 +86,23 @@ class MedicationViewModel(private val repository: Repository) : ViewModel() {
             }
         }
     }
-    
-    fun markMedicationAsTaken(medication: MedicationData, notes: String = "") {
+
+    fun markMedicationAsTaken(medication: MedicationData) {
         viewModelScope.launch {
             try {
                 val currentDate = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Calendar.getInstance().time)
                 val history = MedicationHistoryData(
-                    medName = medication.medName,
-                    description = medication.description,
-                    dosage = medication.dosage,
-                    frequency = medication.frequency,
-                    startDate = medication.startDate,
-                    endDate = medication.endDate,
                     userId = medication.userId,
-                    actionType = "TAKEN",
+                    medName = medication.medName,
+                    action = "Tomado",
                     actionDate = currentDate,
-                    notes = notes.ifEmpty { "Medicamento tomado" }
+                    description = medication.description ?: "",
+                    dosage = medication.dosage ?: "",
+                    frequency = medication.frequency ?: "",
+                    startDate = medication.startDate ?: "",
+                    endDate = medication.endDate ?: "",
+                    actionType = "Tomado",
+                    notes = ""
                 )
                 repository.insertMedicationHistory(history)
                 _medicationState.value = MedicationState.Success("Medication marked as taken")
@@ -98,26 +111,25 @@ class MedicationViewModel(private val repository: Repository) : ViewModel() {
             }
         }
     }
-    
+
     fun markMedicationAsCompleted(medication: MedicationData) {
         viewModelScope.launch {
             try {
                 val currentDate = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Calendar.getInstance().time)
                 val history = MedicationHistoryData(
-                    medName = medication.medName,
-                    description = medication.description,
-                    dosage = medication.dosage,
-                    frequency = medication.frequency,
-                    startDate = medication.startDate,
-                    endDate = medication.endDate,
                     userId = medication.userId,
-                    actionType = "COMPLETED",
+                    medName = medication.medName,
+                    action = "COMPLETED",
                     actionDate = currentDate,
+                    description = medication.description ?: "",
+                    dosage = medication.dosage ?: "",
+                    frequency = medication.frequency ?: "",
+                    startDate = medication.startDate ?: "",
+                    endDate = medication.endDate ?: "",
+                    actionType = "COMPLETED",
                     notes = "Tratamento concluído"
                 )
                 repository.insertMedicationHistory(history)
-                
-                // Remove from active medications
                 repository.deleteMedication(medication)
                 _medicationState.value = MedicationState.Success("Treatment completed successfully")
             } catch (e: Exception) {
@@ -125,7 +137,7 @@ class MedicationViewModel(private val repository: Repository) : ViewModel() {
             }
         }
     }
-    
+
     fun getMedicationById(medicationId: Int, callback: (MedicationData?) -> Unit) {
         viewModelScope.launch {
             try {
@@ -136,9 +148,16 @@ class MedicationViewModel(private val repository: Repository) : ViewModel() {
             }
         }
     }
-    
+
     fun resetState() {
         _medicationState.value = MedicationState.Idle
+    }
+
+    fun resetStateAndUser(context: Context) {
+        _medicationState.value = MedicationState.Idle
+        // Limpa dados do usuário no SharedPreferences
+        val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        sharedPreferences.edit().clear().apply()
     }
 }
 

@@ -9,6 +9,13 @@ data class MedicationHistoryData(
     val userId: String,
     val medName: String,
     val action: String, // exemplo: "taken", "completed", "removed"
-    val date: String
+    val actionDate: String,
+    val description: String,
+    val dosage: String,
+    val frequency: String,
+    val startDate: String,
+    val endDate: String,
+    val actionType: String,
+    val notes: String
 )
-
+// MedicationDao.kt

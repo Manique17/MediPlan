@@ -78,4 +78,8 @@ class Repository(private val dao: RoomDao) {
     suspend fun deleteAllHistoryForUser(userId: String) {
         dao.deleteAllHistoryForUser(userId)
     }
+
+    suspend fun deleteMedicationHistory(history: MedicationHistoryData) {
+        dao.deleteMedicationHistory(history)
+    }
 }

@@ -13,7 +13,7 @@ import com.example.mediplan.RoomDB.UserData
 
 @Database(
     entities = [UserData::class, MedicationData::class, MedicationHistoryData::class],
-    version = 2,
+    version = 3, // Atualizado para corrigir erro de integridade do Room
     exportSchema = false
 )
 @TypeConverters(Converters::class)

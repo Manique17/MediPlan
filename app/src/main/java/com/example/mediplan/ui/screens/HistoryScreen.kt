@@ -195,7 +195,9 @@ fun HistoryScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(displayHistory) { historyItem ->
-                    HistoryCard(historyItem = historyItem)
+                    HistoryCard(historyItem = historyItem, onDelete = { item ->
+                        viewModel.deleteHistoryItem(item)
+                    })
                 }
 
                 item {
@@ -206,24 +208,33 @@ fun HistoryScreen(
     }
 }
 
+
+
+
 @Composable
-fun HistoryCard(historyItem: MedicationHistoryData) {
+fun HistoryCard(historyItem: MedicationHistoryData, onDelete: (MedicationHistoryData) -> Unit = {}) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = historyItem.medName,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.DarkGray
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = historyItem.medName,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.DarkGray,
+                    modifier = Modifier.weight(1f)
+                )
+                IconButton(onClick = { onDelete(historyItem) }) {
+                    Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = Color.Red)
+                }
+            }
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = when (historyItem.action) {
-                    "taken" -> "Medicamento tomado"
+                    "tomado" -> "Medicamento tomado"
                     "completed" -> "Tratamento concluído"
                     "removed" -> "Medicamento removido"
                     else -> historyItem.action
@@ -233,7 +244,7 @@ fun HistoryCard(historyItem: MedicationHistoryData) {
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Data: ${historyItem.date}",
+                text = "Data: ${historyItem.actionDate}",
                 fontSize = 12.sp,
                 color = Color.Gray
             )
