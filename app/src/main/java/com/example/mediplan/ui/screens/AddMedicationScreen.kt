@@ -25,6 +25,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -199,7 +200,8 @@ fun AddMedicationScreen(
                                 keyboardType = KeyboardType.Text,
                                 imeAction = ImeAction.Next
                             ),
-                            singleLine = true
+                            singleLine = true,
+                            textColor = Color.Black
                         )
                         
                         // Description Field
@@ -215,7 +217,8 @@ fun AddMedicationScreen(
                                 keyboardType = KeyboardType.Text,
                                 imeAction = ImeAction.Next
                             ),
-                            maxLines = 3
+                            maxLines = 3,
+                            textColor = Color.Black
                         )
                         
                         // Dosage Field
@@ -231,7 +234,8 @@ fun AddMedicationScreen(
                                 keyboardType = KeyboardType.Text,
                                 imeAction = ImeAction.Next
                             ),
-                            singleLine = true
+                            singleLine = true,
+                            textColor = Color.Black
                         )
                         
                         // Frequency Dropdown
@@ -252,7 +256,11 @@ fun AddMedicationScreen(
                                 },
                                 modifier = Modifier
                                     .menuAnchor()
-                                    .fillMaxWidth()
+                                    .fillMaxWidth(),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    unfocusedTextColor = Color.Black,
+                                    focusedTextColor = Color.Black
+                                )
                             )
 
 
@@ -292,7 +300,8 @@ fun AddMedicationScreen(
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Next
                             ),
-                            singleLine = true
+                            singleLine = true,
+                            textColor = Color.Black
                         )
                         
                         // End Date Field
@@ -315,7 +324,8 @@ fun AddMedicationScreen(
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Done
                             ),
-                            singleLine = true
+                            singleLine = true,
+                            textColor = Color.Black
                         )
                         
                         // Error Message
