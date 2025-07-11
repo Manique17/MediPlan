@@ -8,10 +8,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.mediplan.ui.theme.White
+import com.example.mediplan.ui.theme.LightGreen
 import com.example.mediplan.ui.theme.LightGreen
 
 @Composable
@@ -22,6 +24,7 @@ fun SettingsScreen(
     onDeleteAccount: () -> Unit
 ) {
     var showPasswordDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
@@ -113,12 +116,68 @@ fun SettingsScreen(
             Text("Terminar Sessão", color = Color.White)
         }
         Button(
-            onClick = onDeleteAccount,
+            onClick = { showDeleteDialog = true },
             modifier = Modifier
                 .fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
         ) {
             Text("Eliminar Conta", color = Color.White)
+        }
+        
+        // Delete Account Confirmation Dialog
+        if (showDeleteDialog) {
+            AlertDialog(
+                onDismissRequest = { showDeleteDialog = false },
+                title = { 
+                    Text(
+                        "Eliminar Conta",
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Red
+                    ) 
+                },
+                text = {
+                    Column {
+                        Text(
+                            "Tem a certeza que deseja eliminar a sua conta?",
+                            fontSize = 16.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Text(
+                            "⚠️ Esta ação é irreversível!",
+                            fontSize = 14.sp,
+                            color = Color.Red,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Text(
+                            "Todos os seus medicamentos e histórico serão permanentemente eliminados.",
+                            fontSize = 14.sp,
+                            color = Color.Gray,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            showDeleteDialog = false
+                            onDeleteAccount()
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                    ) {
+                        Text("Sim, Eliminar", color = Color.White)
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { showDeleteDialog = false }
+                    ) {
+                        Text("Cancelar", color = LightGreen)
+                    }
+                }
+            )
         }
     }
 }
