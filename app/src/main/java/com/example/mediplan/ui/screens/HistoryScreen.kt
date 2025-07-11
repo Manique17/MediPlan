@@ -52,9 +52,8 @@ import com.example.mediplan.RoomDB.MedicationHistoryData
 import com.example.mediplan.UserDatabase
 import com.example.mediplan.ViewModel.MedicationViewModel
 import com.example.mediplan.ViewModel.Repository
-import com.example.mediplan.ui.theme.LightBlue
 import com.example.mediplan.ui.theme.LightGreen
-import com.example.mediplan.ui.theme.White
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,9 +75,9 @@ fun HistoryScreen(
     val completedHistory by viewModel.getMedicationHistoryByUserAndType(userId, "COMPLETED").observeAsState(emptyList())
 
     val displayHistory = when (selectedFilter) {
-        "TAKEN" -> takenHistory
-        "DELETED" -> deletedHistory
-        "COMPLETED" -> completedHistory
+        "Tomado" -> takenHistory
+        "Removido" -> deletedHistory
+        "Concluido" -> completedHistory
         else -> allHistory
     }
 
@@ -118,42 +117,7 @@ fun HistoryScreen(
                 .padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            FilterChip(
-                onClick = { selectedFilter = "ALL" },
-                label = { Text("Todos") },
-                selected = selectedFilter == "ALL",
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = LightGreen,
-                    selectedLabelColor = Color.White
-                )
-            )
-            FilterChip(
-                onClick = { selectedFilter = "TAKEN" },
-                label = { Text("Tomados") },
-                selected = selectedFilter == "TAKEN",
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = LightGreen,
-                    selectedLabelColor = Color.White
-                )
-            )
-            FilterChip(
-                onClick = { selectedFilter = "COMPLETED" },
-                label = { Text("Concluídos") },
-                selected = selectedFilter == "COMPLETED",
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = LightGreen,
-                    selectedLabelColor = Color.White
-                )
-            )
-            FilterChip(
-                onClick = { selectedFilter = "DELETED" },
-                label = { Text("Removidos") },
-                selected = selectedFilter == "DELETED",
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = LightGreen,
-                    selectedLabelColor = Color.White
-                )
-            )
+
         }
 
         // History List

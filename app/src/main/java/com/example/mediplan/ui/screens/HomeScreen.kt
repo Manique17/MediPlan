@@ -18,14 +18,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.MedicalServices
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Settings
@@ -35,7 +31,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -43,7 +38,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -60,7 +54,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mediplan.RoomDB.MedicationData
-import com.example.mediplan.RoomDB.MedicationHistoryData
 import com.example.mediplan.UserDatabase
 import com.example.mediplan.ViewModel.MedicationViewModel
 import com.example.mediplan.ViewModel.Repository
@@ -84,24 +77,24 @@ fun HomeScreen(
     val repository = Repository(database.dao)
     val userViewModel = remember { UserViewModel(repository) }
     val medicationViewModel = remember { MedicationViewModel(repository) }
-    
+
     var selectedTab by remember { mutableStateOf(0) }
     var showAddMedication by remember { mutableStateOf(false) }
     var showHistory by remember { mutableStateOf(false) }
-    
+
     // Get current user by ID
     var currentUser by remember { mutableStateOf<com.example.mediplan.RoomDB.UserData?>(null) }
-    
+
     LaunchedEffect(userId) {
         if (userId.isNotEmpty()) {
             val user = repository.getUserById(userId)
             currentUser = user
         }
     }
-    
+
     // Get medications for current user
     val medications by medicationViewModel.getMedicationsByUser(userId).observeAsState(emptyList())
-    
+
     if (showAddMedication) {
         AddMedicationScreen(
             userId = userId,
@@ -204,7 +197,7 @@ fun HomeScreen(
 fun HomeContent(medications: List<MedicationData>, userName: String) {
     val todayMedications = getTodayMedications(medications)
     val upcomingMedications = getUpcomingMedications(medications)
-    
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -235,7 +228,7 @@ fun HomeContent(medications: List<MedicationData>, userName: String) {
                 }
             }
         }
-        
+
         item {
             // Today's Medications
             Card(
@@ -264,7 +257,7 @@ fun HomeContent(medications: List<MedicationData>, userName: String) {
                             color = Color.DarkGray
                         )
                     }
-                    
+
                     if (todayMedications.isEmpty()) {
                         Text(
                             text = "Nenhum medicamento para hoje",
@@ -281,7 +274,7 @@ fun HomeContent(medications: List<MedicationData>, userName: String) {
                 }
             }
         }
-        
+
         item {
             // Upcoming Medications
             Card(
@@ -299,7 +292,7 @@ fun HomeContent(medications: List<MedicationData>, userName: String) {
                         color = Color.DarkGray,
                         modifier = Modifier.padding(bottom = 12.dp)
                     )
-                    
+
                     if (upcomingMedications.isEmpty()) {
                         Text(
                             text = "Nenhum medicamento próximo",
@@ -341,9 +334,9 @@ fun MedicationTodayItem(medication: MedicationData) {
                     .clip(CircleShape)
                     .background(LightGreen)
             )
-            
+
             Spacer(modifier = Modifier.width(12.dp))
-            
+
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = medication.medName,
@@ -375,9 +368,9 @@ fun MedicationUpcomingItem(medication: MedicationData) {
                 .clip(CircleShape)
                 .background(LightBlue)
         )
-        
+
         Spacer(modifier = Modifier.width(12.dp))
-        
+
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = medication.medName,
@@ -391,7 +384,7 @@ fun MedicationUpcomingItem(medication: MedicationData) {
                 color = Color.Gray
             )
         }
-        
+
         Text(
             text = medication.frequency,
             fontSize = 12.sp,
@@ -418,7 +411,7 @@ fun MedicationsContent(medications: List<MedicationData>) {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
         }
-        
+
         if (medications.isEmpty()) {
             item {
                 Card(
@@ -462,7 +455,7 @@ fun MedicationCard(medication: MedicationData) {
     val database = UserDatabase.getDatabase(context)
     val repository = Repository(database.dao)
     val viewModel = remember { MedicationViewModel(repository) }
-    
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = White),
@@ -479,7 +472,7 @@ fun MedicationCard(medication: MedicationData) {
                 fontWeight = FontWeight.Bold,
                 color = Color.DarkGray
             )
-            
+
             if (medication.description.isNotEmpty()) {
                 Text(
                     text = medication.description,
@@ -488,9 +481,9 @@ fun MedicationCard(medication: MedicationData) {
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -508,7 +501,7 @@ fun MedicationCard(medication: MedicationData) {
                         color = Color.DarkGray
                     )
                 }
-                
+
                 Column {
                     Text(
                         text = "Frequência",
@@ -523,7 +516,7 @@ fun MedicationCard(medication: MedicationData) {
                     )
                 }
             }
-            
+
             if (medication.startDate.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
@@ -532,7 +525,7 @@ fun MedicationCard(medication: MedicationData) {
                     color = Color.Gray
                 )
             }
-            
+
             // Action Buttons
             Row(
                 modifier = Modifier
@@ -552,7 +545,7 @@ fun MedicationCard(medication: MedicationData) {
                         color = LightGreen
                     )
                 }
-                
+
                 androidx.compose.material3.OutlinedButton(
                     onClick = {
                         viewModel.markMedicationAsCompleted(medication)
@@ -565,7 +558,7 @@ fun MedicationCard(medication: MedicationData) {
                         color = LightBlue
                     )
                 }
-                
+
                 androidx.compose.material3.OutlinedButton(
                     onClick = {
                         viewModel.deleteMedication(medication)
@@ -592,9 +585,9 @@ fun HistoryContent(
     val database = UserDatabase.getDatabase(context)
     val repository = Repository(database.dao)
     val viewModel = remember { MedicationViewModel(repository) }
-    
+
     val recentHistory by viewModel.getMedicationHistoryByUser(userId).observeAsState(emptyList())
-    
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -613,7 +606,7 @@ fun HistoryContent(
                     fontWeight = FontWeight.Bold,
                     color = LightGreen
                 )
-                
+
                 if (recentHistory.isNotEmpty()) {
                     androidx.compose.material3.TextButton(
                         onClick = onViewFullHistory
@@ -627,7 +620,7 @@ fun HistoryContent(
                 }
             }
         }
-        
+
         if (recentHistory.isEmpty()) {
             item {
                 Card(
@@ -678,7 +671,7 @@ fun getTodayMedications(medications: List<MedicationData>): List<MedicationData>
     val today = Calendar.getInstance()
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     val todayString = dateFormat.format(today.time)
-    
+
     return medications.filter { medication ->
         // Check if medication should be taken today based on start date and frequency
         val startDate = try {
@@ -686,7 +679,7 @@ fun getTodayMedications(medications: List<MedicationData>): List<MedicationData>
         } catch (e: Exception) {
             null
         }
-        
+
         val endDate = if (medication.endDate.isNotEmpty()) {
             try {
                 dateFormat.parse(medication.endDate)
@@ -694,7 +687,7 @@ fun getTodayMedications(medications: List<MedicationData>): List<MedicationData>
                 null
             }
         } else null
-        
+
         when {
             startDate == null -> false
             endDate != null && today.time.after(endDate) -> false
@@ -707,14 +700,14 @@ fun getTodayMedications(medications: List<MedicationData>): List<MedicationData>
 fun getUpcomingMedications(medications: List<MedicationData>): List<MedicationData> {
     val today = Calendar.getInstance()
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    
+
     return medications.filter { medication ->
         val startDate = try {
             dateFormat.parse(medication.startDate)
         } catch (e: Exception) {
             null
         }
-        
+
         startDate != null && today.time.before(startDate)
     }.sortedBy { medication ->
         try {
