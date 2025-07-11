@@ -75,6 +75,7 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    userId: String = "",
     onLogout: () -> Unit = {},
     onAccountDeleted: () -> Unit = {}
 ) {
@@ -88,10 +89,15 @@ fun HomeScreen(
     var showAddMedication by remember { mutableStateOf(false) }
     var showHistory by remember { mutableStateOf(false) }
     
-    // Get current user
-    val currentUser by userViewModel.currentUser.collectAsState()
-
-    val userId = currentUser?.id ?: "default-user"
+    // Get current user by ID
+    var currentUser by remember { mutableStateOf<com.example.mediplan.RoomDB.UserData?>(null) }
+    
+    LaunchedEffect(userId) {
+        if (userId.isNotEmpty()) {
+            val user = repository.getUserById(userId)
+            currentUser = user
+        }
+    }
     
     // Get medications for current user
     val medications by medicationViewModel.getMedicationsByUser(userId).observeAsState(emptyList())

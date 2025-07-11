@@ -54,14 +54,15 @@ import com.example.mediplan.ui.theme.White
 
 @Composable
 fun LoginScreen(
-    onLoginClick: () -> Unit = {},
+    userViewModel: UserViewModel? = null,
+    onLoginClick: (String) -> Unit = {},
     onSignUpClick: () -> Unit = {},
     onForgotPasswordClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val database = UserDatabase.getDatabase(context)
     val repository = Repository(database.dao)
-    val viewModel = remember { UserViewModel(repository) }
+    val viewModel = userViewModel ?: remember { UserViewModel(repository) }
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -74,7 +75,10 @@ fun LoginScreen(
     LaunchedEffect(loginState) {
         when (loginState) {
             is LoginState.Success -> {
-                onLoginClick()
+                val currentUser = viewModel.currentUser.value
+                if (currentUser != null) {
+                    onLoginClick(currentUser.id)
+                }
                 viewModel.resetLoginState()
             }
             is LoginState.Error -> {

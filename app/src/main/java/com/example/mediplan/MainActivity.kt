@@ -14,11 +14,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
 import com.example.mediplan.ui.screens.ForgotPasswordScreen
 import com.example.mediplan.ui.screens.HomeScreen
 import com.example.mediplan.ui.screens.LoginScreen
 import com.example.mediplan.ui.screens.SignUpScreen
 import com.example.mediplan.ui.theme.MediPlanTheme
+import com.example.mediplan.UserDatabase
+import com.example.mediplan.ViewModel.Repository
+import com.example.mediplan.ViewModel.UserViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,25 +41,36 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MediPlanApp(context: ComponentActivity) {
     var currentScreen by remember { mutableStateOf("login") }
+    var currentUserId by remember { mutableStateOf<String?>(null) }
+    
+    val database = UserDatabase.getDatabase(context)
+    val repository = Repository(database.dao)
+    val userViewModel = remember { UserViewModel(repository) }
     
     // Callback to handle logout or account deletion
     val onLogout = {
         Toast.makeText(context, "Sessão terminada", Toast.LENGTH_SHORT).show()
+        userViewModel.logout()
+        currentUserId = null
         currentScreen = "login"
     }
     
     // Callback to handle account deletion
     val onAccountDeleted = {
         Toast.makeText(context, "Conta eliminada com sucesso", Toast.LENGTH_SHORT).show()
+        userViewModel.logout()
+        currentUserId = null
         currentScreen = "login"
     }
     
     when (currentScreen) {
         "login" -> {
             LoginScreen(
-                onLoginClick = {
+                userViewModel = userViewModel,
+                onLoginClick = { userId ->
                     // Handle login action
                     Toast.makeText(context, "Login realizado com sucesso", Toast.LENGTH_SHORT).show()
+                    currentUserId = userId
                     // Navigate to home screen with bottom navigation
                     currentScreen = "home"
                 },
@@ -71,6 +86,7 @@ fun MediPlanApp(context: ComponentActivity) {
         }
         "signup" -> {
             SignUpScreen(
+                userViewModel = userViewModel,
                 onSignUpClick = {
                     // Handle sign up action
                     Toast.makeText(context, "Conta criada com sucesso", Toast.LENGTH_SHORT).show()
@@ -97,6 +113,7 @@ fun MediPlanApp(context: ComponentActivity) {
         }
         "home" -> {
             HomeScreen(
+                userId = currentUserId ?: "",
                 onLogout = onLogout,
                 onAccountDeleted = onAccountDeleted
             )

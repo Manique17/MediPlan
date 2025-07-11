@@ -88,13 +88,14 @@ fun isValidBirthdate(birthdate: String): Boolean {
 
 @Composable
 fun SignUpScreen(
+    userViewModel: UserViewModel? = null,
     onSignUpClick: () -> Unit = {},
     onLoginClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val database = UserDatabase.getDatabase(context)
     val repository = Repository(database.dao)
-    val viewModel = remember { UserViewModel(repository) }
+    val viewModel = userViewModel ?: remember { UserViewModel(repository) }
     val scrollState = rememberScrollState()
     var fullName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }

@@ -39,9 +39,7 @@ class UserViewModel(private val repository: Repository) : ViewModel() {
                 _loginState.value = LoginState.Loading
                 val user = repository.loginUser(email, password)
                 if (user != null) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        _currentUser.value = user
-                    }
+                    _currentUser.value = user
                     _loginState.value = LoginState.Success
                 } else {
                     _loginState.value = LoginState.Error("Invalid email or password")
@@ -93,9 +91,8 @@ class UserViewModel(private val repository: Repository) : ViewModel() {
     fun deleteUser(user: UserData) {
         viewModelScope.launch {
             try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    repository.deleteAllMedicationsForUser(user.id)
-                }
+                repository.deleteAllMedicationsForUser(user.id)
+                repository.deleteAllHistoryForUser(user.id)
                 repository.deleteUser(user)
                 _currentUser.value = null
             } catch (e: Exception) {
