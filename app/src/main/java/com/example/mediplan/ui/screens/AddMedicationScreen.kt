@@ -183,7 +183,7 @@ fun AddMedicationScreen(
                             text = "Informações do Medicamento",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color.DarkGray,
+                            color = Color.Black,
                             modifier = Modifier.padding(bottom = 24.dp)
                         )
                         
