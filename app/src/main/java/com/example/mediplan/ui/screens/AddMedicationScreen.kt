@@ -179,19 +179,21 @@ fun AddMedicationScreen(
                             .padding(24.dp)
                             .fillMaxWidth()
                     ) {
+                        // ... (outras partes do seu Composable AddMedicationScreen)
+
                         Text(
                             text = "Informações do Medicamento",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color.Black,
+                            color = Color.Black, // JÁ ESTÁ CORRETO
                             modifier = Modifier.padding(bottom = 24.dp)
                         )
-                        
+
                         // Medication Name Field
                         AdaptiveOutlinedTextField(
                             value = medicationName,
                             onValueChange = { medicationName = it },
-                            label = { Text("Nome do Medicamento") },
+                            label = { Text("Nome do Medicamento", color = Color.Black) }, // <--- MUDANÇA AQUI
                             placeholder = { Text("Ex: Paracetamol") },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -201,14 +203,14 @@ fun AddMedicationScreen(
                                 imeAction = ImeAction.Next
                             ),
                             singleLine = true,
-                            textColor = Color.Black
+                            textColor = Color.Black // JÁ ESTÁ CORRETO
                         )
-                        
+
                         // Description Field
                         AdaptiveOutlinedTextField(
                             value = description,
                             onValueChange = { description = it },
-                            label = { Text("Descrição/Indicação") },
+                            label = { Text("Descrição/Indicação", color = Color.Black) }, // <--- MUDANÇA AQUI
                             placeholder = { Text("Ex: Para dor de cabeça") },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -218,14 +220,14 @@ fun AddMedicationScreen(
                                 imeAction = ImeAction.Next
                             ),
                             maxLines = 3,
-                            textColor = Color.Black
+                            textColor = Color.Black // JÁ ESTÁ CORRETO
                         )
-                        
+
                         // Dosage Field
                         AdaptiveOutlinedTextField(
                             value = dosage,
                             onValueChange = { dosage = it },
-                            label = { Text("Dosagem") },
+                            label = { Text("Dosagem", color = Color.Black) }, // <--- MUDANÇA AQUI
                             placeholder = { Text("Ex: 500mg") },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -235,10 +237,11 @@ fun AddMedicationScreen(
                                 imeAction = ImeAction.Next
                             ),
                             singleLine = true,
-                            textColor = Color.Black
+                            textColor = Color.Black // JÁ ESTÁ CORRETO
                         )
-                        
+
                         // Frequency Dropdown
+                        @OptIn(ExperimentalMaterial3Api::class) // Adicione se não estiver no escopo da função
                         ExposedDropdownMenuBox(
                             expanded = frequencyExpanded,
                             onExpandedChange = { frequencyExpanded = !frequencyExpanded },
@@ -249,20 +252,24 @@ fun AddMedicationScreen(
                             OutlinedTextField(
                                 value = frequency,
                                 onValueChange = {},
-                                readOnly = true, // evita edição direta
-                                label = { Text("Frequência") },
+                                readOnly = true,
+                                label = { Text("Frequência", color = Color.Black) }, // <--- MUDANÇA AQUI (para garantir)
                                 trailingIcon = {
                                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = frequencyExpanded)
                                 },
                                 modifier = Modifier
                                     .menuAnchor()
                                     .fillMaxWidth(),
-                                colors = OutlinedTextFieldDefaults.colors(
+                                colors = OutlinedTextFieldDefaults.colors( // JÁ ESTÁ BOM, mas pode ser mais completo
+                                    focusedTextColor = Color.Black,
                                     unfocusedTextColor = Color.Black,
-                                    focusedTextColor = Color.Black
+                                    cursorColor = Color.Black,
+                                    focusedLabelColor = Color.Black, // Adicionado para consistência
+                                    unfocusedLabelColor = Color.DarkGray, // Ou Color.Black se preferir sempre preto
+                                    focusedBorderColor = LightGreen, // Mantendo sua cor de foco
+                                    unfocusedBorderColor = Color.Gray
                                 )
                             )
-
 
                             ExposedDropdownMenu(
                                 expanded = frequencyExpanded,
@@ -270,7 +277,7 @@ fun AddMedicationScreen(
                             ) {
                                 frequencyOptions.forEach { option ->
                                     DropdownMenuItem(
-                                        text = { Text(option) },
+                                        text = { Text(option, color = Color.Black) }, // <--- MUDANÇA AQUI
                                         onClick = {
                                             frequency = option
                                             frequencyExpanded = false
@@ -279,7 +286,7 @@ fun AddMedicationScreen(
                                 }
                             }
                         }
-                        
+
                         // Start Date Field
                         AdaptiveOutlinedTextField(
                             value = startDate,
@@ -291,7 +298,7 @@ fun AddMedicationScreen(
                                     else -> filtered
                                 }
                             },
-                            label = { Text("Data de Início") },
+                            label = { Text("Data de Início", color = Color.Black) }, // <--- MUDANÇA AQUI
                             placeholder = { Text("DD/MM/AAAA") },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -301,9 +308,9 @@ fun AddMedicationScreen(
                                 imeAction = ImeAction.Next
                             ),
                             singleLine = true,
-                            textColor = Color.Black
+                            textColor = Color.Black // JÁ ESTÁ CORRETO
                         )
-                        
+
                         // End Date Field
                         AdaptiveOutlinedTextField(
                             value = endDate,
@@ -315,7 +322,7 @@ fun AddMedicationScreen(
                                     else -> filtered
                                 }
                             },
-                            label = { Text("Data de Fim (Opcional)") },
+                            label = { Text("Data de Fim (Opcional)", color = Color.Black) }, // <--- MUDANÇA AQUI
                             placeholder = { Text("DD/MM/AAAA") },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -325,9 +332,9 @@ fun AddMedicationScreen(
                                 imeAction = ImeAction.Done
                             ),
                             singleLine = true,
-                            textColor = Color.Black
+                            textColor = Color.Black // JÁ ESTÁ CORRETO
                         )
-                        
+
                         // Error Message
                         if (errorMessage.isNotEmpty()) {
                             Text(
