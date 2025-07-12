@@ -20,6 +20,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Edit
@@ -545,59 +547,144 @@ fun MedicationCard(medication: MedicationData) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                androidx.compose.material3.OutlinedButton(
+                // Edit Button
+                androidx.compose.material3.Button(
                     onClick = {
                         showEditDialog = true
                     },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(
-                        Icons.Default.Edit,
-                        contentDescription = "Editar",
-                        modifier = Modifier.size(16.dp),
-                        tint = LightGreen
+                    modifier = Modifier.weight(1f),
+                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                        containerColor = LightBlue,
+                        contentColor = Color.White
                     )
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            Icons.Default.Edit,
+                            contentDescription = "Editar",
+                            modifier = Modifier.size(16.dp),
+                            tint = Color.White
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "Editar",
+                            fontSize = 12.sp,
+                            color = Color.White,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 }
-                
-                androidx.compose.material3.OutlinedButton(
+            }
+            
+            // Second row of buttons
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // Taken Button
+                androidx.compose.material3.Button(
                     onClick = {
                         viewModel.markMedicationAsTaken(medication)
                     },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = "Tomei",
-                        fontSize = 11.sp,
-                        color = LightGreen
+                    modifier = Modifier.weight(1f),
+                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                        containerColor = LightGreen,
+                        contentColor = Color.White
                     )
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            Icons.Default.CheckCircle,
+                            contentDescription = "Tomado",
+                            modifier = Modifier.size(16.dp),
+                            tint = Color.White
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "Tomado",
+                            fontSize = 12.sp,
+                            color = Color.White,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 }
 
-                androidx.compose.material3.OutlinedButton(
+                // Complete Button
+                androidx.compose.material3.Button(
                     onClick = {
                         viewModel.markMedicationAsCompleted(medication)
                     },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = "Concluir",
-                        fontSize = 11.sp,
-                        color = LightBlue
+                    modifier = Modifier.weight(1f),
+                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF4CAF50),
+                        contentColor = Color.White
                     )
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            Icons.Default.CheckCircle,
+                            contentDescription = "Concluído",
+                            modifier = Modifier.size(16.dp),
+                            tint = Color.White
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "Concluir",
+                            fontSize = 12.sp,
+                            color = Color.White,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 }
+            }
 
-                androidx.compose.material3.OutlinedButton(
+            // Third row - Delete button
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+            ) {
+                androidx.compose.material3.Button(
                     onClick = {
                         viewModel.deleteMedication(medication)
                     },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = "Remover",
-                        fontSize = 11.sp,
-                        color = Color.Red
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                        containerColor = Color.Red,
+                        contentColor = Color.White
                     )
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = "Eliminar",
+                            modifier = Modifier.size(16.dp),
+                            tint = Color.White
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Eliminar Medicamento",
+                            fontSize = 14.sp,
+                            color = Color.White,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 }
             }
             
