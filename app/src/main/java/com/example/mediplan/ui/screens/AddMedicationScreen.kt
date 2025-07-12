@@ -275,7 +275,7 @@ fun AddMedicationScreen(
                             ) {
                                 frequencyOptions.forEach { option ->
                                     DropdownMenuItem(
-                                        text = { Text(option, color = Color.Black) }, // <--- MUDANÇA AQUI
+                                        text = { Text(option, color = Color.White) },
                                         onClick = {
                                             frequency = option
                                             frequencyExpanded = false

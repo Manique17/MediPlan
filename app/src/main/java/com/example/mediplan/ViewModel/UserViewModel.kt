@@ -22,6 +22,11 @@ class UserViewModel(private val repository: Repository) : ViewModel() {
     private val _signUpState = MutableStateFlow<SignUpState>(SignUpState.Idle)
     val signUpState: StateFlow<SignUpState> = _signUpState.asStateFlow()
 
+    private val _resetPasswordState = MutableStateFlow<ResetPasswordState>(ResetPasswordState.Idle)
+    val resetPasswordState: StateFlow<ResetPasswordState> = _resetPasswordState.asStateFlow()
+
+
+
     fun insertUser(user: UserData) {
         viewModelScope.launch {
             try {
@@ -114,7 +119,10 @@ class UserViewModel(private val repository: Repository) : ViewModel() {
     fun resetSignUpState() {
         _signUpState.value = SignUpState.Idle
     }
-}
+
+        }
+
+
 
 sealed class LoginState {
     object Idle : LoginState()
@@ -128,4 +136,11 @@ sealed class SignUpState {
     object Loading : SignUpState()
     object Success : SignUpState()
     data class Error(val message: String) : SignUpState()
+}
+
+sealed class ResetPasswordState {
+    object Idle : ResetPasswordState()
+    object Loading : ResetPasswordState()
+    data class Success(val message: String) : ResetPasswordState()
+    data class Error(val message: String) : ResetPasswordState()
 }

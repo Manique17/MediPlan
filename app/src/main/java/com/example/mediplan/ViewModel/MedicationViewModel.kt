@@ -68,14 +68,14 @@ class MedicationViewModel(private val repository: Repository) : ViewModel() {
                 val history = MedicationHistoryData(
                     userId = medication.userId,
                     medName = medication.medName,
-                    action = "DELETED",
+                    action = "Eliminado",
                     actionDate = currentDate,
                     description = medication.description ?: "",
                     dosage = medication.dosage ?: "",
                     frequency = medication.frequency ?: "",
                     startDate = medication.startDate ?: "",
                     endDate = medication.endDate ?: "",
-                    actionType = "DELETED",
+                    actionType = "Eliminado",
                     notes = ""
                 )
                 repository.insertMedicationHistory(history)
@@ -119,14 +119,14 @@ class MedicationViewModel(private val repository: Repository) : ViewModel() {
                 val history = MedicationHistoryData(
                     userId = medication.userId,
                     medName = medication.medName,
-                    action = "COMPLETED",
+                    action = "Completado",
                     actionDate = currentDate,
                     description = medication.description ?: "",
                     dosage = medication.dosage ?: "",
                     frequency = medication.frequency ?: "",
                     startDate = medication.startDate ?: "",
                     endDate = medication.endDate ?: "",
-                    actionType = "COMPLETED",
+                    actionType = "Completado",
                     notes = "Tratamento concluído"
                 )
                 repository.insertMedicationHistory(history)

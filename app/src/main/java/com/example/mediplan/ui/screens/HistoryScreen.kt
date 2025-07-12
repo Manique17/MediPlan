@@ -63,8 +63,8 @@ fun HistoryScreen(
     // Get history based on filter
     val allHistory by viewModel.getMedicationHistoryByUser(userId).observeAsState(emptyList())
     val takenHistory by viewModel.getMedicationHistoryByUserAndType(userId, "TAKEN").observeAsState(emptyList())
-    val deletedHistory by viewModel.getMedicationHistoryByUserAndType(userId, "DELETED").observeAsState(emptyList())
-    val completedHistory by viewModel.getMedicationHistoryByUserAndType(userId, "COMPLETED").observeAsState(emptyList())
+    val deletedHistory by viewModel.getMedicationHistoryByUserAndType(userId, "Eliminado").observeAsState(emptyList())
+    val completedHistory by viewModel.getMedicationHistoryByUserAndType(userId, "Completado").observeAsState(emptyList())
 
     val displayHistory = when (selectedFilter) {
         "Tomado" -> takenHistory
@@ -133,8 +133,8 @@ fun HistoryScreen(
                     Text(
                         text = when (selectedFilter) {
                             "TAKEN" -> "Nenhum medicamento tomado ainda"
-                            "DELETED" -> "Nenhum medicamento removido"
-                            "COMPLETED" -> "Nenhum tratamento concluído"
+                            "Eliminado" -> "Nenhum medicamento removido"
+                            "Completado" -> "Nenhum tratamento concluído"
                             else -> "Nenhum histórico encontrado"
                         },
                         fontSize = 16.sp,

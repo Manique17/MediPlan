@@ -101,9 +101,9 @@ fun MediPlanApp(context: ComponentActivity) {
         }
         "forgotpassword" -> {
             ForgotPasswordScreen(
+                userViewModel = userViewModel,
                 onResetPasswordClick = {
-                    // Handle reset password action
-                    Toast.makeText(context, "Email de recuperação enviado", Toast.LENGTH_SHORT).show()
+                    // Handle reset password action - now handled by the screen itself
                 },
                 onBackToLoginClick = {
                     // Navigate back to login screen

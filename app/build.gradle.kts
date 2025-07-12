@@ -41,6 +41,7 @@ android {
     }
 }
 
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -53,6 +54,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation("androidx.compose.material:material-icons-extended:1.6.1")
     implementation(libs.firebase.firestore.ktx)
+    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.androidx.room.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -67,5 +70,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.9.0")
     implementation("androidx.compose.runtime:runtime-livedata:1.8.3")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
+
 }
 
