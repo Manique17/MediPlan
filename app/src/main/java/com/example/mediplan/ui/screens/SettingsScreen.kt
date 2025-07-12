@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.mediplan.ui.theme.White
 import com.example.mediplan.ui.theme.LightGreen
-import com.example.mediplan.ui.theme.LightGreen
 
 @Composable
 fun SettingsScreen(

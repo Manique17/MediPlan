@@ -38,8 +38,7 @@ import com.example.mediplan.ui.components.AdaptiveOutlinedTextField
 import com.example.mediplan.ui.components.GradientButton
 import com.example.mediplan.ui.theme.LightGreen
 import com.example.mediplan.ui.theme.White
-import com.example.mediplan.ui.theme.LightGreen
-import com.example.mediplan.ui.theme.White
+
 
 @Composable
 fun ForgotPasswordScreen(

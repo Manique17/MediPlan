@@ -36,7 +36,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -56,8 +55,6 @@ import com.example.mediplan.ui.components.AdaptiveOutlinedTextField
 import com.example.mediplan.ui.components.GradientButton
 import com.example.mediplan.ui.theme.LightGreen
 import com.example.mediplan.ui.theme.White
-import com.example.mediplan.ui.theme.LightGreen
-import com.example.mediplan.ui.theme.White
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -73,9 +70,9 @@ fun AddMedicationScreen(
     val database = UserDatabase.getDatabase(context)
     val repository = Repository(database.dao)
     val viewModel = remember { MedicationViewModel(repository) }
-    
+
     val scrollState = rememberScrollState()
-    
+
     var medicationName by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var dosage by remember { mutableStateOf("") }
@@ -83,11 +80,11 @@ fun AddMedicationScreen(
     var startDate by remember { mutableStateOf("") }
     var endDate by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
-    
+
     // Frequency dropdown options
     val frequencyOptions = listOf(
         "Uma vez por dia",
-        "Duas vezes por dia", 
+        "Duas vezes por dia",
         "Três vezes por dia",
         "Quatro vezes por dia",
         "A cada 6 horas",
@@ -96,9 +93,10 @@ fun AddMedicationScreen(
         "Conforme necessário"
     )
     var frequencyExpanded by remember { mutableStateOf(false) }
-    
+
     val medicationState by viewModel.medicationState.collectAsState()
-    
+
+
     // Handle medication state changes
     LaunchedEffect(medicationState) {
         when (medicationState) {
@@ -114,21 +112,21 @@ fun AddMedicationScreen(
             }
         }
     }
-    
+
     // Get current date for default start date
     val currentDate = remember {
         val calendar = Calendar.getInstance()
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         dateFormat.format(calendar.time)
     }
-    
+
     // Set default start date
     LaunchedEffect(Unit) {
         if (startDate.isEmpty()) {
             startDate = currentDate
         }
     }
-    
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -157,7 +155,7 @@ fun AddMedicationScreen(
                 containerColor = LightGreen
             )
         )
-        
+
         // Form Content
         Box(
             modifier = Modifier
@@ -344,7 +342,7 @@ fun AddMedicationScreen(
                                 modifier = Modifier.padding(bottom = 16.dp)
                             )
                         }
-                        
+
                         // Add Medication Button
                         GradientButton(
                             text = if (medicationState is MedicationState) "ADICIONANDO..." else "ADICIONAR MEDICAMENTO",
@@ -375,7 +373,7 @@ fun AddMedicationScreen(
                                 .height(50.dp)
                                 .clip(RoundedCornerShape(25.dp))
                         )
-                        
+
                         // Loading indicator
                         if (medicationState is MedicationState) {
                             Row(
