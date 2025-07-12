@@ -22,17 +22,26 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -43,11 +52,14 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -455,6 +467,8 @@ fun MedicationCard(medication: MedicationData) {
     val database = UserDatabase.getDatabase(context)
     val repository = Repository(database.dao)
     val viewModel = remember { MedicationViewModel(repository) }
+    
+    var showEditDialog by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -531,8 +545,22 @@ fun MedicationCard(medication: MedicationData) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
+                androidx.compose.material3.OutlinedButton(
+                    onClick = {
+                        showEditDialog = true
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        Icons.Default.Edit,
+                        contentDescription = "Editar",
+                        modifier = Modifier.size(16.dp),
+                        tint = LightGreen
+                    )
+                }
+                
                 androidx.compose.material3.OutlinedButton(
                     onClick = {
                         viewModel.markMedicationAsTaken(medication)
@@ -541,7 +569,7 @@ fun MedicationCard(medication: MedicationData) {
                 ) {
                     Text(
                         text = "Tomei",
-                        fontSize = 12.sp,
+                        fontSize = 11.sp,
                         color = LightGreen
                     )
                 }
@@ -554,7 +582,7 @@ fun MedicationCard(medication: MedicationData) {
                 ) {
                     Text(
                         text = "Concluir",
-                        fontSize = 12.sp,
+                        fontSize = 11.sp,
                         color = LightBlue
                     )
                 }
@@ -567,13 +595,241 @@ fun MedicationCard(medication: MedicationData) {
                 ) {
                     Text(
                         text = "Remover",
-                        fontSize = 12.sp,
+                        fontSize = 11.sp,
                         color = Color.Red
                     )
                 }
             }
+            
+            // Edit Dialog
+            if (showEditDialog) {
+                EditMedicationDialog(
+                    medication = medication,
+                    onDismiss = { showEditDialog = false },
+                    onSave = { updatedMedication ->
+                        viewModel.updateMedication(updatedMedication)
+                        showEditDialog = false
+                    }
+                )
+            }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditMedicationDialog(
+    medication: MedicationData,
+    onDismiss: () -> Unit,
+    onSave: (MedicationData) -> Unit
+) {
+    var medicationName by remember { mutableStateOf(medication.medName) }
+    var description by remember { mutableStateOf(medication.description) }
+    var dosage by remember { mutableStateOf(medication.dosage) }
+    var frequency by remember { mutableStateOf(medication.frequency) }
+    var startDate by remember { mutableStateOf(medication.startDate) }
+    var endDate by remember { mutableStateOf(medication.endDate) }
+    
+    // Frequency dropdown options
+    val frequencyOptions = listOf(
+        "Uma vez por dia",
+        "Duas vezes por dia", 
+        "Três vezes por dia",
+        "Quatro vezes por dia",
+        "A cada 6 horas",
+        "A cada 8 horas",
+        "A cada 12 horas",
+        "Conforme necessário"
+    )
+    var frequencyExpanded by remember { mutableStateOf(false) }
+    
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Editar Medicamento",
+                fontWeight = FontWeight.Bold,
+                color = LightGreen
+            )
+        },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                // Medication Name
+                OutlinedTextField(
+                    value = medicationName,
+                    onValueChange = { medicationName = it },
+                    label = { Text("Nome do Medicamento", color = Color.Black) },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        cursorColor = Color.Black,
+                        focusedBorderColor = LightGreen,
+                        unfocusedBorderColor = Color.Gray
+                    )
+                )
+                
+                // Description
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("Descrição", color = Color.Black) },
+                    modifier = Modifier.fillMaxWidth(),
+                    maxLines = 2,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        cursorColor = Color.Black,
+                        focusedBorderColor = LightGreen,
+                        unfocusedBorderColor = Color.Gray
+                    )
+                )
+                
+                // Dosage
+                OutlinedTextField(
+                    value = dosage,
+                    onValueChange = { dosage = it },
+                    label = { Text("Dosagem", color = Color.Black) },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        cursorColor = Color.Black,
+                        focusedBorderColor = LightGreen,
+                        unfocusedBorderColor = Color.Gray
+                    )
+                )
+                
+                // Frequency Dropdown
+                ExposedDropdownMenuBox(
+                    expanded = frequencyExpanded,
+                    onExpandedChange = { frequencyExpanded = !frequencyExpanded },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    OutlinedTextField(
+                        value = frequency,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Frequência", color = Color.Black) },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = frequencyExpanded)
+                        },
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black,
+                            cursorColor = Color.Black,
+                            focusedBorderColor = LightGreen,
+                            unfocusedBorderColor = Color.Gray
+                        )
+                    )
+                    
+                    ExposedDropdownMenu(
+                        expanded = frequencyExpanded,
+                        onDismissRequest = { frequencyExpanded = false }
+                    ) {
+                        frequencyOptions.forEach { option ->
+                            DropdownMenuItem(
+                                text = { Text(option, color = Color.Black) },
+                                onClick = {
+                                    frequency = option
+                                    frequencyExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+                
+                // Start Date
+                OutlinedTextField(
+                    value = startDate,
+                    onValueChange = { newValue ->
+                        val filtered = newValue.filter { it.isDigit() }.take(8)
+                        startDate = when {
+                            filtered.length > 4 -> "${filtered.take(2)}/${filtered.substring(2, 4)}/${filtered.substring(4)}"
+                            filtered.length > 2 -> "${filtered.take(2)}/${filtered.substring(2)}"
+                            else -> filtered
+                        }
+                    },
+                    label = { Text("Data de Início", color = Color.Black) },
+                    placeholder = { Text("DD/MM/AAAA") },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    ),
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        cursorColor = Color.Black,
+                        focusedBorderColor = LightGreen,
+                        unfocusedBorderColor = Color.Gray
+                    )
+                )
+                
+                // End Date
+                OutlinedTextField(
+                    value = endDate,
+                    onValueChange = { newValue ->
+                        val filtered = newValue.filter { it.isDigit() }.take(8)
+                        endDate = when {
+                            filtered.length > 4 -> "${filtered.take(2)}/${filtered.substring(2, 4)}/${filtered.substring(4)}"
+                            filtered.length > 2 -> "${filtered.take(2)}/${filtered.substring(2)}"
+                            else -> filtered
+                        }
+                    },
+                    label = { Text("Data de Fim (Opcional)", color = Color.Black) },
+                    placeholder = { Text("DD/MM/AAAA") },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    ),
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        cursorColor = Color.Black,
+                        focusedBorderColor = LightGreen,
+                        unfocusedBorderColor = Color.Gray
+                    )
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    val updatedMedication = medication.copy(
+                        medName = medicationName,
+                        description = description,
+                        dosage = dosage,
+                        frequency = frequency,
+                        startDate = startDate,
+                        endDate = endDate
+                    )
+                    onSave(updatedMedication)
+                },
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    containerColor = LightGreen
+                )
+            ) {
+                Text("Salvar", color = Color.White)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancelar", color = LightGreen)
+            }
+        }
+    )
 }
 
 @Composable
