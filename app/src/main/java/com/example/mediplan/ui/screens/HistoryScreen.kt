@@ -199,8 +199,8 @@ fun HistoryCard(historyItem: MedicationHistoryData, onDelete: (MedicationHistory
             Text(
                 text = when (historyItem.action) {
                     "tomado" -> "Medicamento tomado"
-                    "completed" -> "Tratamento concluído"
-                    "removed" -> "Medicamento removido"
+                    "Completado" -> "Tratamento concluído"
+                    "Eliminado" -> "Medicamento removido"
                     else -> historyItem.action
                 },
                 fontSize = 14.sp,
