@@ -748,13 +748,13 @@ fun EditMedicationDialog(
                 OutlinedTextField(
                     value = medicationName,
                     onValueChange = { medicationName = it },
-                    label = { Text("Nome do Medicamento", color = Color.Black) },
+                    label = { Text("Nome do Medicamento", color = Color.White) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.Black,
-                        unfocusedTextColor = Color.Black,
-                        cursorColor = Color.Black,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        cursorColor = Color.White,
                         focusedBorderColor = LightGreen,
                         unfocusedBorderColor = Color.Gray
                     )
@@ -764,13 +764,13 @@ fun EditMedicationDialog(
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
-                    label = { Text("Descrição", color = Color.Black) },
+                    label = { Text("Descrição", color = Color.White) },
                     modifier = Modifier.fillMaxWidth(),
                     maxLines = 2,
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.Black,
-                        unfocusedTextColor = Color.Black,
-                        cursorColor = Color.Black,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        cursorColor = Color.White,
                         focusedBorderColor = LightGreen,
                         unfocusedBorderColor = Color.Gray
                     )
@@ -780,13 +780,13 @@ fun EditMedicationDialog(
                 OutlinedTextField(
                     value = dosage,
                     onValueChange = { dosage = it },
-                    label = { Text("Dosagem", color = Color.Black) },
+                    label = { Text("Dosagem", color = Color.White) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.Black,
-                        unfocusedTextColor = Color.Black,
-                        cursorColor = Color.Black,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        cursorColor = Color.White,
                         focusedBorderColor = LightGreen,
                         unfocusedBorderColor = Color.Gray
                     )
@@ -802,7 +802,7 @@ fun EditMedicationDialog(
                         value = frequency,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Frequência", color = Color.Black) },
+                        label = { Text("Frequência", color = Color.White) },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = frequencyExpanded)
                         },
@@ -810,9 +810,9 @@ fun EditMedicationDialog(
                             .menuAnchor()
                             .fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = Color.Black,
-                            unfocusedTextColor = Color.Black,
-                            cursorColor = Color.Black,
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White,
+                            cursorColor = Color.White,
                             focusedBorderColor = LightGreen,
                             unfocusedBorderColor = Color.Gray
                         )
@@ -824,7 +824,7 @@ fun EditMedicationDialog(
                     ) {
                         frequencyOptions.forEach { option ->
                             DropdownMenuItem(
-                                text = { Text(option, color = Color.Black) },
+                                text = { Text(option, color = Color.White) },
                                 onClick = {
                                     frequency = option
                                     frequencyExpanded = false
@@ -845,7 +845,7 @@ fun EditMedicationDialog(
                             else -> filtered
                         }
                     },
-                    label = { Text("Data de Início", color = Color.Black) },
+                    label = { Text("Data de Início", color = Color.White) },
                     placeholder = { Text("DD/MM/AAAA") },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(
@@ -854,9 +854,9 @@ fun EditMedicationDialog(
                     ),
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.Black,
-                        unfocusedTextColor = Color.Black,
-                        cursorColor = Color.Black,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        cursorColor = Color.White,
                         focusedBorderColor = LightGreen,
                         unfocusedBorderColor = Color.Gray
                     )
@@ -873,7 +873,7 @@ fun EditMedicationDialog(
                             else -> filtered
                         }
                     },
-                    label = { Text("Data de Fim (Opcional)", color = Color.Black) },
+                    label = { Text("Data de Fim (Opcional)", color = Color.White) },
                     placeholder = { Text("DD/MM/AAAA") },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(
@@ -882,9 +882,9 @@ fun EditMedicationDialog(
                     ),
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.Black,
-                        unfocusedTextColor = Color.Black,
-                        cursorColor = Color.Black,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        cursorColor = Color.White,
                         focusedBorderColor = LightGreen,
                         unfocusedBorderColor = Color.Gray
                     )
