@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
@@ -113,20 +114,13 @@ fun ForgotPasswordScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Image(
-                painter = painterResource(id = R.drawable.mediplan_logo),
+                painter = painterResource(id = R.drawable.mediplan_logo), // Assumindo que voc&#234; nomeou o arquivo como "mediplan_logo"
                 contentDescription = "MediPlan Logo",
                 modifier = Modifier
-                    .size(120.dp)
-                    .padding(bottom = 16.dp)
+                    .size(120.dp) // Ajustado para um tamanho menor, j&#225; que a imagem &#233; um &#237;cone
+                    .padding(bottom = 32.dp)
             )
 
-            Text(
-                text = "MediPlan",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                color = LightGreen,
-                modifier = Modifier.padding(bottom = 32.dp)
-            )
 
             Card(
                 modifier = Modifier
@@ -150,7 +144,7 @@ fun ForgotPasswordScreen(
                     )
 
                     Text(
-                        text = "Digite seu email e enviaremos uma nova senha temporária.",
+                        text = "Digite seu email e enviaremos uma nova senha tempor&#225;ria.",
                         fontSize = 14.sp,
                         color = Color.Gray,
                         modifier = Modifier.padding(bottom = 24.dp),
@@ -193,23 +187,20 @@ fun ForgotPasswordScreen(
                         )
                     }
 
-
-                    enabled = resetPasswordStateValue !is ResetPasswordState.Loading// Desabilitar botão durante o carregamento
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
-                        .clip(RoundedCornerShape(25.dp))
                     GradientButton(
                         text = "Enviar Email",
                         onClick = {
                             if (email.isNotEmpty()) {
                                 viewModel.resetPassword(email)
                             } else {
-                                errorMessage = "Por favor, insira um email válido."
+                                errorMessage = "Por favor, insira um email v&#225;lido."
                             }
                         },
-                        modifier = Modifier.padding(bottom = 16.dp),
-                        enabled = resetPasswordStateValue !is ResetPasswordState.Loading // Desabilitar botão durante o carregamento
+                        modifier = Modifier
+                            .width(200.dp) // Define uma largura fixa para o bot&#227;o
+                            .height(45.dp) // Reduz a altura do bot&#227;o
+                            .padding(bottom = 16.dp),
+                        enabled = resetPasswordStateValue !is ResetPasswordState.Loading // Desabilitar bot&#227;o durante o carregamento
                     )
 
                     if (resetPasswordStateValue is ResetPasswordState.Loading) {
@@ -251,7 +242,7 @@ fun ForgotPasswordScreen(
 @Preview(showBackground = true)
 fun ForgotPasswordScreenPreview() {
     // Para o preview, podemos mockar o ViewModel ou usar um estado inicial
-    // Aqui, vamos apenas chamar com o UserViewModel nulo, que fará com que
-    // o Composable crie sua própria instância (bom para previews isolados).
+    // Aqui, vamos apenas chamar com o UserViewModel nulo, que far&#225; com que
+    // o Composable crie sua pr&#243;pria inst&#225;ncia (bom para previews isolados).
     ForgotPasswordScreen()
 }
