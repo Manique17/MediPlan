@@ -33,6 +33,7 @@ Se encontrar problemas ao atualizar o projeto, consulte o [Guia de Troubleshooti
 
 **Problemas comuns:**
 - Erro de sincronização do Gradle → Limpe o cache: `./gradlew clean`
+- "untracked files prevent merge" → Mova ou adicione arquivos ao Git
 - Conflitos de merge → Use `git stash` antes de fazer pull
 - SDK não encontrado → Verifique o SDK Manager
 

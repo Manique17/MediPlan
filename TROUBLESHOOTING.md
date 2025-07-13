@@ -30,10 +30,32 @@
 
 **Sintomas:**
 - "Your local changes would be overwritten by merge"
+- "The following untracked files would be overwritten by merge"
+- "untracked files prevent merge"
 - "Automatic merge failed"
 - Conflitos de merge
 
 **Soluções:**
+1. **Para erro "untracked files prevent merge":**
+   ```bash
+   # Ver quais arquivos estão causando problema
+   git status
+   
+   # Opção 1: Mover arquivos para backup
+   mkdir backup-arquivos
+   mv arquivo-problema.txt backup-arquivos/
+   git pull origin main
+   
+   # Opção 2: Adicionar arquivos ao Git primeiro
+   git add .
+   git commit -m "Adicionar arquivos locais"
+   git pull origin main
+   
+   # Opção 3: Forçar sobrescrita (CUIDADO - perde arquivos)
+   git clean -fd
+   git pull origin main
+   ```
+
 1. **Fazer stash das mudanças locais:**
    ```bash
    git stash
