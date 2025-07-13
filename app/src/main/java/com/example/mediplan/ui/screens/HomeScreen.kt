@@ -243,6 +243,7 @@ fun HomeScreen(
                     )
                     3 -> SettingsScreen(
                         userName = currentUser?.name ?: "Usuário",
+                        userId = userId,
                         isDarkMode = isDarkMode,
                         onThemeChange = onThemeChange,
                         onChangePassword = { /* TODO: Implementar ação de mudar palavra-passe */ },

@@ -101,11 +101,18 @@ class UserViewModel(private val repository: Repository) : ViewModel() {
     fun deleteUser(user: UserData) {
         viewModelScope.launch {
             try {
+                // Primeiro elimina todos os dados relacionados ao usuário
                 repository.deleteAllMedicationsForUser(user.id)
                 repository.deleteAllHistoryForUser(user.id)
+                // Depois elimina o usuário
                 repository.deleteUser(user)
+                // Limpa o estado atual do usuário
                 _currentUser.value = null
+                // Log para debug
+                android.util.Log.d("UserViewModel", "Usuário ${user.name} eliminado com sucesso")
             } catch (e: Exception) {
+                // Log do erro para debug
+                android.util.Log.e("UserViewModel", "Erro ao eliminar usuário: ${e.message}")
             }
         }
     }

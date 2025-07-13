@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -17,22 +19,44 @@ import com.example.mediplan.ui.theme.LightGreen
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
+import com.example.mediplan.UserDatabase
+import com.example.mediplan.ViewModel.Repository
+import com.example.mediplan.ViewModel.UserViewModel
 
 //define os ecrãs de configuração do utilizador
 @Composable
 fun SettingsScreen(
-    userName: String,
+    userName: String = "",
+    userId: String = "",
     isDarkMode: Boolean,
     onThemeChange: (Boolean) -> Unit,
     onChangePassword: () -> Unit,
     onLogout: () -> Unit,
     onDeleteAccount: () -> Unit
 ) {
+    val context = LocalContext.current
+    val database = UserDatabase.getDatabase(context)
+    val repository = Repository(database.dao)
+    val userViewModel = remember { UserViewModel(repository) }
+    
     var showPasswordDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
+    
+    // Observa o usuário atual
+    val currentUser by userViewModel.currentUser.collectAsState()
+    
+    // Carrega o usuário atual quando o userId muda
+    LaunchedEffect(userId) {
+        if (userId.isNotEmpty()) {
+            val user = repository.getUserById(userId)
+            if (user != null) {
+                userViewModel.updateUser(user) // Atualiza o estado do usuário no ViewModel
+            }
+        }
+    }
 
     // Ecrã de configurações do utilizador
     LazyColumn(
@@ -201,6 +225,10 @@ fun SettingsScreen(
                     onDismiss = { showDeleteDialog = false },
                     onConfirm = {
                         showDeleteDialog = false
+                        // Elimina o usuário atual se existir
+                        currentUser?.let { user ->
+                            userViewModel.deleteUser(user)
+                        }
                         onDeleteAccount()
                     }
                 )
@@ -316,5 +344,13 @@ private fun DeleteAccountDialog(
 @Preview(showBackground = true)
 @Composable
 fun SettingsScreenPreview() {
-    SettingsScreen(userName = "João Silva", isDarkMode = false, onThemeChange = {}, onChangePassword = {}, onLogout = {}, onDeleteAccount = {})
+    SettingsScreen(
+        userName = "João Silva", 
+        userId = "preview-user-id",
+        isDarkMode = false, 
+        onThemeChange = {}, 
+        onChangePassword = {}, 
+        onLogout = {}, 
+        onDeleteAccount = {}
+    )
 }
