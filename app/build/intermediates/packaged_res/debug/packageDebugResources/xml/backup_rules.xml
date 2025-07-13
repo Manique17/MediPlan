@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<full-backup-content>
-    <!-- Exclui a pasta com cache ou arquivos que você não quer no backup -->
-    <exclude domain="cache" />
-    <!-- Inclui tudo o resto -->
-    <include domain="file" />
-</full-backup-content>
