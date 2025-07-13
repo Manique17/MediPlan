@@ -11,6 +11,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.platform.LocalContext
@@ -45,6 +47,7 @@ fun MediPlanApp() {
     var currentUserId by remember { mutableStateOf<String?>(null) }
 
     val localContext = LocalContext.current // Chamada no escopo @Composable
+    val coroutineScope = rememberCoroutineScope() // Para executar operações assíncronas
     
     // Inicializando o ViewModel do usuário e do tema
     val userViewModel = remember {
@@ -65,8 +68,10 @@ fun MediPlanApp() {
                 LoginScreen(
                     userViewModel = userViewModel,
                     onLoginClick = { userId ->
+                        android.util.Log.d("MainActivity", "Login realizado com sucesso, userId: $userId")
                         Toast.makeText(localContext, "Login realizado com sucesso", Toast.LENGTH_SHORT).show()
                         currentUserId = userId
+                        android.util.Log.d("MainActivity", "currentUserId definido como: $currentUserId")
                         currentScreen = "home"
                     },
                     onSignUpClick = {
@@ -111,6 +116,7 @@ fun MediPlanApp() {
                         currentScreen = "login"
                     },
                     onAccountDeleted = {
+                        // Apenas navegar para a tela de login
                         Toast.makeText(localContext, "Conta eliminada com sucesso", Toast.LENGTH_SHORT).show()
                         userViewModel.logout()
                         currentUserId = null

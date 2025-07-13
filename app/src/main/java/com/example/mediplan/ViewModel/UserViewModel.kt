@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 // ViewModel para gerenciar o estado do usuário
-class UserViewModel(private val repository: Repository) : ViewModel() {
+class UserViewModel(val repository: Repository) : ViewModel() {
 
     private val _currentUser = MutableStateFlow<UserData?>(null)
     val currentUser: StateFlow<UserData?> = _currentUser.asStateFlow()
@@ -133,8 +133,21 @@ class UserViewModel(private val repository: Repository) : ViewModel() {
     fun resetSignUpState() {
         _signUpState.value = SignUpState.Idle
     }
-
+    
+    // Função para alterar a senha do usuário
+    fun changePassword(user: UserData, newPassword: String) {
+        viewModelScope.launch {
+            try {
+                val updatedUser = user.copy(password = newPassword)
+                repository.updateUser(updatedUser)
+                _currentUser.value = updatedUser
+                android.util.Log.d("UserViewModel", "Senha alterada com sucesso para o usuário ${user.name}")
+            } catch (e: Exception) {
+                android.util.Log.e("UserViewModel", "Erro ao alterar senha: ${e.message}")
+            }
         }
+    }
+}
 
 
 // Funções para gerenciar o estado de redefinição de senha

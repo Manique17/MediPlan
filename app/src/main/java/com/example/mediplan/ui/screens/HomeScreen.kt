@@ -1,5 +1,7 @@
 package com.example.mediplan.ui.screens
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -108,8 +110,20 @@ fun HomeScreen(
 
     LaunchedEffect(userId) {
         if (userId.isNotEmpty()) {
-            val user = repository.getUserById(userId)
-            currentUser = user
+            Log.d("HomeScreen", "Tentando obter usuário pelo ID: $userId")
+            try {
+                val user = repository.getUserById(userId)
+                if (user != null) {
+                    Log.d("HomeScreen", "Usuário encontrado: ${user.name}")
+                    currentUser = user
+                } else {
+                    Log.e("HomeScreen", "Usuário não encontrado para o ID: $userId")
+                }
+            } catch (e: Exception) {
+                Log.e("HomeScreen", "Erro ao obter usuário: ${e.message}", e)
+            }
+        } else {
+            Log.e("HomeScreen", "userId está vazio")
         }
     }
 
@@ -243,12 +257,53 @@ fun HomeScreen(
                     )
                     3 -> SettingsScreen(
                         userName = currentUser?.name ?: "Usuário",
-                        userId = userId,
                         isDarkMode = isDarkMode,
                         onThemeChange = onThemeChange,
-                        onChangePassword = { /* TODO: Implementar ação de mudar palavra-passe */ },
+                        onChangePassword = { newPassword -> 
+                            // Implementar diretamente a alteração de senha
+                            if (currentUser != null) {
+                                // Usar o userViewModel para alterar a senha
+                                val updatedUser = currentUser!!.copy(password = newPassword)
+                                userViewModel.updateUser(updatedUser)
+                                
+                                // Mostrar mensagem de sucesso
+                                Toast.makeText(
+                                    context,
+                                    "Senha alterada com sucesso",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Erro: usuário não encontrado",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        },
                         onLogout = onLogout,
-                        onDeleteAccount = onAccountDeleted
+                        onDeleteAccount = {
+                            // Implementar diretamente a exclusão da conta
+                            if (currentUser != null) {
+                                // Usar o userViewModel para excluir a conta
+                                userViewModel.deleteUser(currentUser!!)
+                                
+                                // Mostrar mensagem de sucesso
+                                Toast.makeText(
+                                    context,
+                                    "Conta eliminada com sucesso",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                
+                                // Chamar o callback para navegar para a tela de login
+                                onAccountDeleted()
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Erro: usuário não encontrado",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
                     )
                 }
             }
@@ -1164,5 +1219,11 @@ fun getUpcomingMedications(medications: List<MedicationData>): List<MedicationDa
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(isDarkMode = false, onThemeChange = {})
+    HomeScreen(
+        userId = "previewUser",
+        isDarkMode = false, 
+        onThemeChange = {},
+        onLogout = {},
+        onAccountDeleted = {}
+    )
 }
