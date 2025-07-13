@@ -33,6 +33,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -40,6 +41,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -139,7 +141,7 @@ fun HomeScreen(
             },
             bottomBar = {
                 BottomAppBar(
-                    containerColor = Color.White
+                    containerColor = Color.White,
                     tonalElevation = 8.dp
                 ) {
                     NavigationBarItem(
@@ -147,7 +149,7 @@ fun HomeScreen(
                         label = { Text("Home") },
                         selected = selectedTab == 0,
                         onClick = { selectedTab = 0 },
-                        colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
+                        colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = LightGreen,
                             selectedTextColor = LightGreen,
                             unselectedIconColor = Color.Gray,
@@ -160,7 +162,7 @@ fun HomeScreen(
                         label = { Text("Medicamentos") },
                         selected = selectedTab == 1,
                         onClick = { selectedTab = 1 },
-                        colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
+                        colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = LightGreen,
                             selectedTextColor = LightGreen,
                             unselectedIconColor = Color.Gray,
@@ -173,7 +175,7 @@ fun HomeScreen(
                         label = { Text("Histórico") },
                         selected = selectedTab == 2,
                         onClick = { selectedTab = 2 },
-                        colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
+                        colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = LightGreen,
                             selectedTextColor = LightGreen,
                             unselectedIconColor = Color.Gray,
@@ -186,7 +188,7 @@ fun HomeScreen(
                         label = { Text("Configurações") },
                         selected = selectedTab == 3,
                         onClick = { selectedTab = 3 },
-                        colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
+                        colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = LightGreen,
                             selectedTextColor = LightGreen,
                             unselectedIconColor = Color.Gray,
@@ -353,6 +355,10 @@ fun HomeContent(medications: List<MedicationData>, userName: String) {
                 }
             }
         }
+
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
     }
 }
 
@@ -362,7 +368,7 @@ fun MedicationTodayItem(medication: MedicationData) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
-            .border(width = 4.dp,LightGreen, RoundedCornerShape(16.dp))
+            .border(width = 1.dp, LightGreen, RoundedCornerShape(8.dp))
             .clickable { },
         colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
@@ -584,12 +590,12 @@ fun MedicationCard(medication: MedicationData) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 // Edit Button
-                androidx.compose.material3.Button(
+                Button(
                     onClick = {
                         showEditDialog = true
                     },
                     modifier = Modifier.weight(1f),
-                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    colors = ButtonDefaults.buttonColors(
                         containerColor = LightBlue,
                         contentColor = Color.White
                     )
@@ -623,12 +629,12 @@ fun MedicationCard(medication: MedicationData) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 // Taken Button
-                androidx.compose.material3.Button(
+                Button(
                     onClick = {
                         viewModel.markMedicationAsTaken(medication)
                     },
                     modifier = Modifier.weight(1f),
-                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    colors = ButtonDefaults.buttonColors(
                         containerColor = LightGreen,
                         contentColor = Color.White
                     )
@@ -654,12 +660,12 @@ fun MedicationCard(medication: MedicationData) {
                 }
 
                 // Complete Button
-                androidx.compose.material3.Button(
+                Button(
                     onClick = {
                         viewModel.markMedicationAsCompleted(medication)
                     },
                     modifier = Modifier.weight(1f),
-                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF4CAF50),
                         contentColor = Color.White
                     )
@@ -691,12 +697,12 @@ fun MedicationCard(medication: MedicationData) {
                     .fillMaxWidth()
                     .padding(top = 8.dp)
             ) {
-                androidx.compose.material3.Button(
+                Button(
                     onClick = {
                         viewModel.deleteMedication(medication)
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Red,
                         contentColor = Color.White
                     )
@@ -782,13 +788,13 @@ fun EditMedicationDialog(
                 OutlinedTextField(
                     value = medicationName,
                     onValueChange = { medicationName = it },
-                    label = { Text("Nome do Medicamento", color = Color.White) },
+                    label = { Text("Nome do Medicamento", color = Color.Black) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        cursorColor = Color.White,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        cursorColor = Color.Black,
                         focusedBorderColor = LightGreen,
                         unfocusedBorderColor = Color.Gray
                     )
@@ -798,13 +804,13 @@ fun EditMedicationDialog(
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
-                    label = { Text("Descrição", color = Color.White) },
+                    label = { Text("Descrição", color = Color.Black) },
                     modifier = Modifier.fillMaxWidth(),
                     maxLines = 2,
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        cursorColor = Color.White,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        cursorColor = Color.Black,
                         focusedBorderColor = LightGreen,
                         unfocusedBorderColor = Color.Gray
                     )
@@ -814,13 +820,13 @@ fun EditMedicationDialog(
                 OutlinedTextField(
                     value = dosage,
                     onValueChange = { dosage = it },
-                    label = { Text("Dosagem", color = Color.White) },
+                    label = { Text("Dosagem", color = Color.Black) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        cursorColor = Color.White,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        cursorColor = Color.Black,
                         focusedBorderColor = LightGreen,
                         unfocusedBorderColor = Color.Gray
                     )
@@ -836,7 +842,7 @@ fun EditMedicationDialog(
                         value = frequency,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Frequência", color = Color.White) },
+                        label = { Text("Frequência", color = Color.Black) },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = frequencyExpanded)
                         },
@@ -844,9 +850,9 @@ fun EditMedicationDialog(
                             .menuAnchor()
                             .fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White,
-                            cursorColor = Color.White,
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black,
+                            cursorColor = Color.Black,
                             focusedBorderColor = LightGreen,
                             unfocusedBorderColor = Color.Gray
                         )
@@ -858,7 +864,7 @@ fun EditMedicationDialog(
                     ) {
                         frequencyOptions.forEach { option ->
                             DropdownMenuItem(
-                                text = { Text(option, color = Color.White) },
+                                text = { Text(option, color = Color.Black) },
                                 onClick = {
                                     frequency = option
                                     frequencyExpanded = false
@@ -879,7 +885,7 @@ fun EditMedicationDialog(
                             else -> filtered
                         }
                     },
-                    label = { Text("Data de Início", color = Color.White) },
+                    label = { Text("Data de Início", color = Color.Black) },
                     placeholder = { Text("DD/MM/AAAA") },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(
@@ -888,9 +894,9 @@ fun EditMedicationDialog(
                     ),
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        cursorColor = Color.White,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        cursorColor = Color.Black,
                         focusedBorderColor = LightGreen,
                         unfocusedBorderColor = Color.Gray
                     )
@@ -907,7 +913,7 @@ fun EditMedicationDialog(
                             else -> filtered
                         }
                     },
-                    label = { Text("Data de Fim (Opcional)", color = Color.White) },
+                    label = { Text("Data de Fim (Opcional)", color = Color.Black) },
                     placeholder = { Text("DD/MM/AAAA") },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(
@@ -916,9 +922,9 @@ fun EditMedicationDialog(
                     ),
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        cursorColor = Color.White,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        cursorColor = Color.Black,
                         focusedBorderColor = LightGreen,
                         unfocusedBorderColor = Color.Gray
                     )
@@ -938,7 +944,7 @@ fun EditMedicationDialog(
                     )
                     onSave(updatedMedication)
                 },
-                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                colors = ButtonDefaults.buttonColors(
                     containerColor = LightGreen
                 )
             ) {
@@ -985,7 +991,7 @@ fun HistoryContent(
                 )
 
                 if (recentHistory.isNotEmpty()) {
-                    androidx.compose.material3.TextButton(
+                    TextButton(
                         onClick = onViewFullHistory
                     ) {
                         Text(
@@ -1045,7 +1051,6 @@ fun HistoryContent(
         }
     }
 }
-
 
 // Helper functions
 fun getTodayMedications(medications: List<MedicationData>): List<MedicationData> {
