@@ -1,0 +1,17 @@
+# Este arquivo deve ser copiado para local.properties
+# e configurado com os caminhos corretos do seu sistema
+
+# Localização do Android SDK
+# Windows: C:\\Users\\SeuUsuario\\AppData\\Local\\Android\\Sdk
+# macOS: /Users/SeuUsuario/Library/Android/sdk
+# Linux: /home/SeuUsuario/Android/Sdk
+sdk.dir=/caminho/para/android/sdk
+
+# Configurações opcionais do NDK (se usar código nativo)
+# ndk.dir=/caminho/para/android/ndk
+
+# Configurações de proxy (se necessário)
+# systemProp.http.proxyHost=proxy.company.com
+# systemProp.http.proxyPort=8080
+# systemProp.https.proxyHost=proxy.company.com
+# systemProp.https.proxyPort=8080
