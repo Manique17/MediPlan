@@ -140,30 +140,59 @@ fun HomeScreen(
             bottomBar = {
                 BottomAppBar(
                     containerColor = Color.White
+                    tonalElevation = 8.dp
                 ) {
                     NavigationBarItem(
                         icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
                         label = { Text("Home") },
                         selected = selectedTab == 0,
-                        onClick = { selectedTab = 0 }
+                        onClick = { selectedTab = 0 },
+                        colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
+                            selectedIconColor = LightGreen,
+                            selectedTextColor = LightGreen,
+                            unselectedIconColor = Color.Gray,
+                            unselectedTextColor = Color.Gray,
+                            indicatorColor = LightGreen.copy(alpha = 0.1f)
+                        )
                     )
                     NavigationBarItem(
                         icon = { Icon(Icons.Default.Person, contentDescription = "Medications") },
                         label = { Text("Medicamentos") },
                         selected = selectedTab == 1,
-                        onClick = { selectedTab = 1 }
+                        onClick = { selectedTab = 1 },
+                        colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
+                            selectedIconColor = LightGreen,
+                            selectedTextColor = LightGreen,
+                            unselectedIconColor = Color.Gray,
+                            unselectedTextColor = Color.Gray,
+                            indicatorColor = LightGreen.copy(alpha = 0.1f)
+                        )
                     )
                     NavigationBarItem(
                         icon = { Icon(Icons.Default.History, contentDescription = "History") },
                         label = { Text("Histórico") },
                         selected = selectedTab == 2,
-                        onClick = { selectedTab = 2 }
+                        onClick = { selectedTab = 2 },
+                        colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
+                            selectedIconColor = LightGreen,
+                            selectedTextColor = LightGreen,
+                            unselectedIconColor = Color.Gray,
+                            unselectedTextColor = Color.Gray,
+                            indicatorColor = LightGreen.copy(alpha = 0.1f)
+                        )
                     )
                     NavigationBarItem(
                         icon = { Icon(Icons.Default.Settings, contentDescription = "Settings") },
                         label = { Text("Configurações") },
                         selected = selectedTab == 3,
-                        onClick = { selectedTab = 3 }
+                        onClick = { selectedTab = 3 },
+                        colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
+                            selectedIconColor = LightGreen,
+                            selectedTextColor = LightGreen,
+                            unselectedIconColor = Color.Gray,
+                            unselectedTextColor = Color.Gray,
+                            indicatorColor = LightGreen.copy(alpha = 0.1f)
+                        )
                     )
                 }
             },
@@ -171,7 +200,8 @@ fun HomeScreen(
                 if (selectedTab == 1) {
                     FloatingActionButton(
                         onClick = { showAddMedication = true },
-                        containerColor = LightGreen
+                        containerColor = LightGreen,
+                        contentColor = Color.White
                     ) {
                         Icon(
                             Icons.Default.Add,
@@ -182,7 +212,7 @@ fun HomeScreen(
                 }
             }
         ) { paddingValues ->
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
@@ -458,6 +488,10 @@ fun MedicationsContent(medications: List<MedicationData>) {
         } else {
             items(medications) { medication ->
                 MedicationCard(medication = medication)
+            }
+            
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
@@ -1003,6 +1037,10 @@ fun HistoryContent(
         } else {
             items(recentHistory.take(5)) { historyItem ->
                 HistoryCard(historyItem = historyItem)
+            }
+            
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }

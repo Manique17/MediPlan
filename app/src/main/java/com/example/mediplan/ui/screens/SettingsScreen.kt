@@ -2,6 +2,7 @@ package com.example.mediplan.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.mediplan.ui.theme.White
-import com.example.mediplan.ui.theme.LightGreen
 
 @Composable
 fun SettingsScreen(
@@ -28,36 +28,91 @@ fun SettingsScreen(
     var confirmPassword by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(White)
-            .padding(24.dp),
+            .background(Color(0xFFF5F5F5))
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Configurações",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            color = LightGreen,
-            modifier = Modifier.padding(bottom = 32.dp)
-        )
-        Text(
-            text = "Olá, $userName!",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = Color.Black,
-            modifier = Modifier.padding(bottom = 32.dp)
-        )
-        Button(
-            onClick = { showPasswordDialog = true },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = LightGreen)
-        ) {
-            Text("Mudar Palavra-passe", color = Color.White)
+        item {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Configurações",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = LightGreen,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                    Text(
+                        text = "Olá, $userName!",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.Black,
+                        modifier = Modifier.padding(bottom = 24.dp)
+                    )
+                }
+            }
         }
+        
+        item {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = "Conta",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.DarkGray,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    
+                    Button(
+                        onClick = { showPasswordDialog = true },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = LightGreen)
+                    ) {
+                        Text("Mudar Palavra-passe", color = Color.White)
+                    }
+                    
+                    Button(
+                        onClick = onLogout,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
+                    ) {
+                        Text("Terminar Sessão", color = Color.White)
+                    }
+                    
+                    Button(
+                        onClick = { showDeleteDialog = true },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                    ) {
+                        Text("Eliminar Conta", color = Color.White)
+                    }
+                }
+            }
+        }
+        
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        
         if (showPasswordDialog) {
             AlertDialog(
                 onDismissRequest = { showPasswordDialog = false },
@@ -104,23 +159,6 @@ fun SettingsScreen(
                     }
                 }
             )
-        }
-        Button(
-            onClick = onLogout,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
-        ) {
-            Text("Terminar Sessão", color = Color.White)
-        }
-        Button(
-            onClick = { showDeleteDialog = true },
-            modifier = Modifier
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-        ) {
-            Text("Eliminar Conta", color = Color.White)
         }
         
         // Delete Account Confirmation Dialog
