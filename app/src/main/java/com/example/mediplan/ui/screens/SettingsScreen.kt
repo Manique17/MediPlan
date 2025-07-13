@@ -14,10 +14,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.mediplan.ui.theme.White
+import com.example.mediplan.ui.theme.LightGreen
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
 
 @Composable
 fun SettingsScreen(
     userName: String,
+    isDarkMode: Boolean,
+    onThemeChange: (Boolean) -> Unit,
     onChangePassword: () -> Unit,
     onLogout: () -> Unit,
     onDeleteAccount: () -> Unit
@@ -113,33 +119,58 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
         }
         
-        if (showPasswordDialog) {
-            AlertDialog(
-                onDismissRequest = { showPasswordDialog = false },
-                title = { Text("Mudar Palavra-passe") },
-                text = {
-                    Column {
-                        OutlinedTextField(
-                            value = newPassword,
-                            onValueChange = { newPassword = it },
-                            label = { Text("Nova palavra-passe") },
-                            singleLine = true,
-                            isError = passwordError.isNotEmpty()
+        item {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = "Aparência",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.DarkGray,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text("Modo Escuro")
+                        Switch(
+                            checked = isDarkMode,
+                            onCheckedChange = onThemeChange,
+                            thumbContent = if (isDarkMode) {
+                                { Icon(Icons.Default.DarkMode, contentDescription = null) }
+                            } else {
+                                { Icon(Icons.Default.LightMode, contentDescription = null) }
+                            }
                         )
-                        OutlinedTextField(
-                            value = confirmPassword,
-                            onValueChange = { confirmPassword = it },
-                            label = { Text("Confirmar palavra-passe") },
-                            singleLine = true,
-                            isError = passwordError.isNotEmpty()
-                        )
-                        if (passwordError.isNotEmpty()) {
-                            Text(passwordError, color = Color.Red, fontSize = 12.sp)
-                        }
                     }
-                },
-                confirmButton = {
-                    Button(onClick = {
+                }
+            }
+        }
+        
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        
+        item {
+            if (showPasswordDialog) {
+                ChangePasswordDialog(
+                    newPassword = newPassword,
+                    confirmPassword = confirmPassword,
+                    passwordError = passwordError,
+                    onNewPasswordChange = { newPassword = it },
+                    onConfirmPasswordChange = { confirmPassword = it },
+                    onDismiss = { showPasswordDialog = false },
+                    onConfirm = {
                         if (newPassword.length < 6) {
                             passwordError = "A palavra-passe deve ter pelo menos 6 caracteres."
                         } else if (newPassword != confirmPassword) {
@@ -147,80 +178,130 @@ fun SettingsScreen(
                         } else {
                             passwordError = ""
                             showPasswordDialog = false
-                            onChangePassword() // Aqui você pode passar a nova senha para a lógica real
+                            onChangePassword()
                         }
-                    }) {
-                        Text("Confirmar")
                     }
-                },
-                dismissButton = {
-                    TextButton(onClick = { showPasswordDialog = false }) {
-                        Text("Cancelar")
-                    }
-                }
-            )
+                )
+            }
         }
-        
-        // Delete Account Confirmation Dialog
-        if (showDeleteDialog) {
-            AlertDialog(
-                onDismissRequest = { showDeleteDialog = false },
-                title = { 
-                    Text(
-                        "Eliminar Conta",
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Red
-                    ) 
-                },
-                text = {
-                    Column {
-                        Text(
-                            "Tem a certeza que deseja eliminar a sua conta?",
-                            fontSize = 16.sp,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        )
-                        Text(
-                            "⚠️ Esta ação é irreversível!",
-                            fontSize = 14.sp,
-                            color = Color.Red,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        )
-                        Text(
-                            "Todos os seus medicamentos e histórico serão permanentemente eliminados.",
-                            fontSize = 14.sp,
-                            color = Color.Gray,
-                            textAlign = TextAlign.Center
-                        )
+
+        item {
+            if (showDeleteDialog) {
+                DeleteAccountDialog(
+                    onDismiss = { showDeleteDialog = false },
+                    onConfirm = {
+                        showDeleteDialog = false
+                        onDeleteAccount()
                     }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            showDeleteDialog = false
-                            onDeleteAccount()
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-                    ) {
-                        Text("Sim, Eliminar", color = Color.White)
-                    }
-                },
-                dismissButton = {
-                    TextButton(
-                        onClick = { showDeleteDialog = false }
-                    ) {
-                        Text("Cancelar", color = LightGreen)
-                    }
-                }
-            )
+                )
+            }
         }
     }
+}
+
+@Composable
+private fun ChangePasswordDialog(
+    newPassword: String,
+    confirmPassword: String,
+    passwordError: String,
+    onNewPasswordChange: (String) -> Unit,
+    onConfirmPasswordChange: (String) -> Unit,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Mudar Palavra-passe") },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = newPassword,
+                    onValueChange = onNewPasswordChange,
+                    label = { Text("Nova palavra-passe") },
+                    singleLine = true,
+                    isError = passwordError.isNotEmpty()
+                )
+                OutlinedTextField(
+                    value = confirmPassword,
+                    onValueChange = onConfirmPasswordChange,
+                    label = { Text("Confirmar palavra-passe") },
+                    singleLine = true,
+                    isError = passwordError.isNotEmpty()
+                )
+                if (passwordError.isNotEmpty()) {
+                    Text(passwordError, color = Color.Red, fontSize = 12.sp)
+                }
+            }
+        },
+        confirmButton = {
+            Button(onClick = onConfirm) {
+                Text("Confirmar")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancelar")
+            }
+        }
+    )
+}
+
+@Composable
+private fun DeleteAccountDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { 
+            Text(
+                "Eliminar Conta",
+                fontWeight = FontWeight.Bold,
+                color = Color.Red
+            ) 
+        },
+        text = {
+            Column {
+                Text(
+                    "Tem a certeza que deseja eliminar a sua conta?",
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    "⚠️ Esta ação é irreversível!",
+                    fontSize = 14.sp,
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    "Todos os seus medicamentos e histórico serão permanentemente eliminados.",
+                    fontSize = 14.sp,
+                    color = Color.Gray,
+                    textAlign = TextAlign.Center
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = onConfirm,
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+            ) {
+                Text("Sim, Eliminar", color = Color.White)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancelar", color = LightGreen)
+            }
+        }
+    )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun SettingsScreenPreview() {
-    SettingsScreen(userName = "João Silva", onChangePassword = {}, onLogout = {}, onDeleteAccount = {})
+    SettingsScreen(userName = "João Silva", isDarkMode = false, onThemeChange = {}, onChangePassword = {}, onLogout = {}, onDeleteAccount = {})
 }

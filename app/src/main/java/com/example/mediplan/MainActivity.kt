@@ -5,12 +5,11 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,7 +30,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MediPlanTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    MediPlanApp(context = this)
+                    MediPlanApp()
                 }
             }
         }
@@ -39,84 +38,99 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MediPlanApp(context: ComponentActivity) {
+fun MediPlanApp() {
+    val initialDarkTheme = isSystemInDarkTheme()
+    var isDarkMode by remember { mutableStateOf(initialDarkTheme) } // (1) ESTADO PRINCIPAL
+
+    // ... outros estados e viewModel ...
+
+    MediPlanTheme(darkTheme = isDarkMode) { // (2) TEMA USA O ESTADO
+        val currentScreen = null
+        when (currentScreen) {
+            // ...
+            "home" -> {
+                HomeScreen(
+                    // ... outros parâmetros ...
+                    isDarkMode = isDarkMode,          // (3) ESTADO É PASSADO PARA A HOME
+                    onThemeChange = { newThemeState -> // (4) CALLBACK PARA MUDAR O ESTADO
+                        isDarkMode = newThemeState
+                    }
+                )
+            }
+        }
+    }
+
     var currentScreen by remember { mutableStateOf("login") }
     var currentUserId by remember { mutableStateOf<String?>(null) }
-    
-    val database = UserDatabase.getDatabase(context)
-    val repository = Repository(database.dao)
-    val userViewModel = remember { UserViewModel(repository) }
-    
-    // Callback to handle logout or account deletion
-    val onLogout = {
-        Toast.makeText(context, "Sessão terminada", Toast.LENGTH_SHORT).show()
-        userViewModel.logout()
-        currentUserId = null
-        currentScreen = "login"
+
+    val localContext = LocalContext.current // Chamada no escopo @Composable
+    val userViewModel = remember {
+        val database = UserDatabase.getDatabase(localContext) // Usar a variável localContext
+        val repository = Repository(database.dao)
+        UserViewModel(repository)
     }
-    
-    // Callback to handle account deletion
-    val onAccountDeleted = {
-        Toast.makeText(context, "Conta eliminada com sucesso", Toast.LENGTH_SHORT).show()
-        userViewModel.logout()
-        currentUserId = null
-        currentScreen = "login"
-    }
-    
-    when (currentScreen) {
-        "login" -> {
-            LoginScreen(
-                userViewModel = userViewModel,
-                onLoginClick = { userId ->
-                    // Handle login action
-                    Toast.makeText(context, "Login realizado com sucesso", Toast.LENGTH_SHORT).show()
-                    currentUserId = userId
-                    // Navigate to home screen with bottom navigation
-                    currentScreen = "home"
-                },
-                onSignUpClick = {
-                    // Navigate to sign up screen
-                    currentScreen = "signup"
-                },
-                onForgotPasswordClick = {
-                    // Navigate to forgot password screen
-                    currentScreen = "forgotpassword"
-                }
-            )
-        }
-        "signup" -> {
-            SignUpScreen(
-                userViewModel = userViewModel,
-                onSignUpClick = {
-                    // Handle sign up action
-                    Toast.makeText(context, "Conta criada com sucesso", Toast.LENGTH_SHORT).show()
-                    // Navigate back to login screen
-                    currentScreen = "login"
-                },
-                onLoginClick = {
-                    // Navigate back to login screen
-                    currentScreen = "login"
-                }
-            )
-        }
-        "forgotpassword" -> {
-            ForgotPasswordScreen(
-                userViewModel = userViewModel,
-                onResetPasswordClick = {
-                    // Handle reset password action - now handled by the screen itself
-                },
-                onBackToLoginClick = {
-                    // Navigate back to login screen
-                    currentScreen = "login"
-                }
-            )
-        }
-        "home" -> {
-            HomeScreen(
-                userId = currentUserId ?: "",
-                onLogout = onLogout,
-                onAccountDeleted = onAccountDeleted
-            )
+
+    MediPlanTheme(darkTheme = isDarkMode) {
+        when (currentScreen) {
+            "login" -> {
+                LoginScreen(
+                    userViewModel = userViewModel,
+                    onLoginClick = { userId ->
+                        Toast.makeText(localContext, "Login realizado com sucesso", Toast.LENGTH_SHORT).show()
+                        currentUserId = userId
+                        currentScreen = "home"
+                    },
+                    onSignUpClick = {
+                        currentScreen = "signup"
+                    },
+                    onForgotPasswordClick = {
+                        currentScreen = "forgotpassword"
+                    }
+                )
+            }
+            "signup" -> {
+                SignUpScreen(
+                    userViewModel = userViewModel,
+                    onSignUpClick = {
+                        Toast.makeText(localContext, "Conta criada com sucesso", Toast.LENGTH_SHORT).show()
+                        currentScreen = "login"
+                    },
+                    onLoginClick = {
+                        currentScreen = "login"
+                    }
+                )
+            }
+            "forgotpassword" -> {
+                ForgotPasswordScreen(
+                    userViewModel = userViewModel,
+                    onResetPasswordClick = {
+                        // A lógica de resetar a senha (mostrar mensagem de sucesso/erro)
+                        // já está dentro de ForgotPasswordScreen.
+                    },
+                    onBackToLoginClick = {
+                        currentScreen = "login"
+                    }
+                )
+            }
+            "home" -> {
+                HomeScreen(
+                    userId = currentUserId ?: "",
+                    onLogout = {
+                        Toast.makeText(localContext, "Sessão terminada", Toast.LENGTH_SHORT).show()
+                        userViewModel.logout()
+                        currentUserId = null
+                        currentScreen = "login"
+                    },
+                    onAccountDeleted = {
+                        Toast.makeText(localContext, "Conta eliminada com sucesso", Toast.LENGTH_SHORT).show()
+                        userViewModel.logout()
+                        currentUserId = null
+                        currentScreen = "login"
+                    },
+                    isDarkMode = isDarkMode,
+                    onThemeChange = { isDarkMode = it }
+                )
+            }
         }
     }
 }
@@ -125,7 +139,18 @@ fun MediPlanApp(context: ComponentActivity) {
 @Composable
 fun LoginScreenPreview() {
     MediPlanTheme {
-        LoginScreen()
+        val context = LocalContext.current // Chamada no escopo @Composable
+        val userViewModel = remember {
+            val database = UserDatabase.getDatabase(context)
+            val repository = Repository(database.dao)
+            UserViewModel(repository)
+        }
+        LoginScreen(
+            userViewModel = userViewModel,
+            onLoginClick = {},
+            onSignUpClick = {},
+            onForgotPasswordClick = {}
+        )
     }
 }
 
@@ -133,7 +158,17 @@ fun LoginScreenPreview() {
 @Composable
 fun SignUpScreenPreview() {
     MediPlanTheme {
-        SignUpScreen()
+        val context = LocalContext.current // Chamada no escopo @Composable
+        val userViewModel = remember {
+            val database = UserDatabase.getDatabase(context)
+            val repository = Repository(database.dao)
+            UserViewModel(repository)
+        }
+        SignUpScreen(
+            userViewModel = userViewModel,
+            onSignUpClick = {},
+            onLoginClick = {}
+        )
     }
 }
 
@@ -141,7 +176,17 @@ fun SignUpScreenPreview() {
 @Composable
 fun ForgotPasswordScreenPreview() {
     MediPlanTheme {
-        ForgotPasswordScreen()
+        val context = LocalContext.current // Chamada no escopo @Composable
+        val userViewModel = remember {
+            val database = UserDatabase.getDatabase(context)
+            val repository = Repository(database.dao)
+            UserViewModel(repository)
+        }
+        ForgotPasswordScreen(
+            userViewModel = userViewModel,
+            onResetPasswordClick = {},
+            onBackToLoginClick = {}
+        )
     }
 }
 
@@ -150,8 +195,11 @@ fun ForgotPasswordScreenPreview() {
 fun HomeScreenPreview() {
     MediPlanTheme {
         HomeScreen(
+            userId = "previewUser", // Pode usar um ID de usuário de exemplo para o preview
             onLogout = {},
-            onAccountDeleted = {}
+            onAccountDeleted = {},
+            isDarkMode = false,
+            onThemeChange = {}
         )
     }
 }

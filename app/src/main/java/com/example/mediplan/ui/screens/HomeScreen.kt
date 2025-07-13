@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MedicalServices
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Settings
@@ -85,6 +86,8 @@ import java.util.Locale
 @Composable
 fun HomeScreen(
     userId: String = "",
+    isDarkMode: Boolean,
+    onThemeChange: (Boolean) -> Unit,
     onLogout: () -> Unit = {},
     onAccountDeleted: () -> Unit = {}
 ) {
@@ -158,8 +161,8 @@ fun HomeScreen(
                         )
                     )
                     NavigationBarItem(
-                        icon = { Icon(Icons.Default.Person, contentDescription = "Medications") },
-                        label = { Text("Medicamentos") },
+                        icon = { Icon(Icons.Default.MedicalServices, contentDescription = "Medicamentos") },
+                        label = { Text("Meds") },
                         selected = selectedTab == 1,
                         onClick = { selectedTab = 1 },
                         colors = NavigationBarItemDefaults.colors(
@@ -171,7 +174,7 @@ fun HomeScreen(
                         )
                     )
                     NavigationBarItem(
-                        icon = { Icon(Icons.Default.History, contentDescription = "History") },
+                        icon = { Icon(Icons.Default.History, contentDescription = "Histórico") },
                         label = { Text("Histórico") },
                         selected = selectedTab == 2,
                         onClick = { selectedTab = 2 },
@@ -184,8 +187,8 @@ fun HomeScreen(
                         )
                     )
                     NavigationBarItem(
-                        icon = { Icon(Icons.Default.Settings, contentDescription = "Settings") },
-                        label = { Text("Configurações") },
+                        icon = { Icon(Icons.Default.Settings, contentDescription = "Configurações") },
+                        label = { Text("Config") },
                         selected = selectedTab == 3,
                         onClick = { selectedTab = 3 },
                         colors = NavigationBarItemDefaults.colors(
@@ -229,6 +232,8 @@ fun HomeScreen(
                     )
                     3 -> SettingsScreen(
                         userName = currentUser?.name ?: "Usuário",
+                        isDarkMode = isDarkMode,
+                        onThemeChange = onThemeChange,
                         onChangePassword = { /* TODO: Implementar ação de mudar palavra-passe */ },
                         onLogout = onLogout,
                         onDeleteAccount = onAccountDeleted
@@ -1110,5 +1115,5 @@ fun getUpcomingMedications(medications: List<MedicationData>): List<MedicationDa
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen()
+    HomeScreen(isDarkMode = false, onThemeChange = {})
 }
