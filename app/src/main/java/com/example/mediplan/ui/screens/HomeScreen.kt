@@ -82,6 +82,8 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+
+// Função auxiliar para obter medicamentos de hoje
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -101,7 +103,7 @@ fun HomeScreen(
     var showAddMedication by remember { mutableStateOf(false) }
     var showHistory by remember { mutableStateOf(false) }
 
-    // Get current user by ID
+    // Coloca o utilizador atual no estado
     var currentUser by remember { mutableStateOf<com.example.mediplan.RoomDB.UserData?>(null) }
 
     LaunchedEffect(userId) {
@@ -111,9 +113,10 @@ fun HomeScreen(
         }
     }
 
-    // Get medications for current user
+    // Observa o estado do utilizador atual
     val medications by medicationViewModel.getMedicationsByUser(userId).observeAsState(emptyList())
 
+    // Função auxiliar para obter medicamentos de hoje
     if (showAddMedication) {
         AddMedicationScreen(
             userId = userId,
@@ -142,6 +145,7 @@ fun HomeScreen(
                     )
                 )
             },
+            // Barra de navegação inferior
             bottomBar = {
                 BottomAppBar(
                     containerColor = Color.White,
@@ -160,6 +164,7 @@ fun HomeScreen(
                             indicatorColor = LightGreen.copy(alpha = 0.1f)
                         )
                     )
+                    // Item de navegação para Medicamentos
                     NavigationBarItem(
                         icon = { Icon(Icons.Default.MedicalServices, contentDescription = "Medicamentos") },
                         label = { Text("Meds") },
@@ -173,6 +178,7 @@ fun HomeScreen(
                             indicatorColor = LightGreen.copy(alpha = 0.1f)
                         )
                     )
+                    //item de navegação para Histórico
                     NavigationBarItem(
                         icon = { Icon(Icons.Default.History, contentDescription = "Histórico") },
                         label = { Text("Histórico") },
@@ -186,6 +192,7 @@ fun HomeScreen(
                             indicatorColor = LightGreen.copy(alpha = 0.1f)
                         )
                     )
+                    // Item de navegação para Configurações
                     NavigationBarItem(
                         icon = { Icon(Icons.Default.Settings, contentDescription = "Configurações") },
                         label = { Text("Config") },
@@ -201,6 +208,7 @@ fun HomeScreen(
                     )
                 }
             },
+            // Botão flutuante para adicionar medicamento
             floatingActionButton = {
                 if (selectedTab == 1) {
                     FloatingActionButton(
@@ -208,6 +216,7 @@ fun HomeScreen(
                         containerColor = LightGreen,
                         contentColor = Color.White
                     ) {
+                        // Ícone de adicionar medicamento
                         Icon(
                             Icons.Default.Add,
                             contentDescription = "Adicionar Medicamento",
@@ -216,6 +225,7 @@ fun HomeScreen(
                     }
                 }
             }
+            // Conteúdo principal da tela
         ) { paddingValues ->
             Column(
                 modifier = Modifier
@@ -223,6 +233,7 @@ fun HomeScreen(
                     .padding(paddingValues)
                     .background(MaterialTheme.colorScheme.background)
             ) {
+                // Exibe o conteúdo baseado na aba selecionada
                 when (selectedTab) {
                     0 -> HomeContent(medications = medications, userName = currentUser?.name ?: "Usuário")
                     1 -> MedicationsContent(medications = medications)
@@ -244,17 +255,20 @@ fun HomeScreen(
     }
 }
 
+// Função auxiliar para obter medicamentos de hoje
 @Composable
 fun HomeContent(medications: List<MedicationData>, userName: String) {
     val todayMedications = getTodayMedications(medications)
     val upcomingMedications = getUpcomingMedications(medications)
 
+    // Exibe o conteúdo da tela inicial
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        // Cabeçalho da tela inicial
         item {
             // Welcome Card
             Card(
@@ -280,6 +294,7 @@ fun HomeContent(medications: List<MedicationData>, userName: String) {
             }
         }
 
+        // Card para exibir medicamentos de hoje e próximos
         item {
             // Today's Medications
             Card(
@@ -287,6 +302,7 @@ fun HomeContent(medications: List<MedicationData>, userName: String) {
                 colors = CardDefaults.cardColors(containerColor = White),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
+                // Cabeçalho do card de medicamentos de hoje
                 Column(
                     modifier = Modifier.padding(16.dp)
                 ) {
@@ -309,6 +325,7 @@ fun HomeContent(medications: List<MedicationData>, userName: String) {
                         )
                     }
 
+                    // Lista de medicamentos de hoje
                     if (todayMedications.isEmpty()) {
                         Text(
                             text = "Nenhum medicamento para hoje",
@@ -326,6 +343,7 @@ fun HomeContent(medications: List<MedicationData>, userName: String) {
             }
         }
 
+        // Card para exibir os próximos medicamentos
         item {
             // Upcoming Medications
             Card(
@@ -344,6 +362,7 @@ fun HomeContent(medications: List<MedicationData>, userName: String) {
                         modifier = Modifier.padding(bottom = 12.dp)
                     )
 
+                    // Lista de próximos medicamentos
                     if (upcomingMedications.isEmpty()) {
                         Text(
                             text = "Nenhum medicamento próximo",
@@ -361,12 +380,14 @@ fun HomeContent(medications: List<MedicationData>, userName: String) {
             }
         }
 
+        // Espaço extra no final da lista
         item {
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
 
+// Função auxiliar para obter medicamentos de hoje
 @Composable
 fun MedicationTodayItem(medication: MedicationData) {
     Card(
@@ -387,6 +408,7 @@ fun MedicationTodayItem(medication: MedicationData) {
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+        // Ícone de medicamento
             Box(
                 modifier = Modifier
                     .size(12.dp)
@@ -394,8 +416,10 @@ fun MedicationTodayItem(medication: MedicationData) {
                     .background(LightGreen)
             )
 
+            // Espaço entre o ícone e o texto
             Spacer(modifier = Modifier.width(12.dp))
 
+            // Informações do medicamento
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = medication.medName,
@@ -413,6 +437,7 @@ fun MedicationTodayItem(medication: MedicationData) {
     }
 }
 
+// Função auxiliar para obter medicamentos de hoje
 @Composable
 fun MedicationUpcomingItem(medication: MedicationData) {
     Row(
@@ -428,8 +453,10 @@ fun MedicationUpcomingItem(medication: MedicationData) {
                 .background(LightBlue)
         )
 
+        // Espaço entre o ícone e o texto
         Spacer(modifier = Modifier.width(12.dp))
 
+        // Informações do medicamento
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = medication.medName,
@@ -444,6 +471,7 @@ fun MedicationUpcomingItem(medication: MedicationData) {
             )
         }
 
+        // Frequência do medicamento
         Text(
             text = medication.frequency,
             fontSize = 12.sp,
@@ -453,6 +481,7 @@ fun MedicationUpcomingItem(medication: MedicationData) {
     }
 }
 
+// Função auxiliar para obter medicamentos de hoje
 @Composable
 fun MedicationsContent(medications: List<MedicationData>) {
     LazyColumn(
@@ -471,6 +500,7 @@ fun MedicationsContent(medications: List<MedicationData>) {
             )
         }
 
+        // Verifica se há medicamentos
         if (medications.isEmpty()) {
             item {
                 Card(
@@ -500,6 +530,7 @@ fun MedicationsContent(medications: List<MedicationData>) {
                     }
                 }
             }
+            // Espaço extra no final da lista
         } else {
             items(medications) { medication ->
                 MedicationCard(medication = medication)
@@ -512,6 +543,7 @@ fun MedicationsContent(medications: List<MedicationData>) {
     }
 }
 
+// Função auxiliar para obter medicamentos de hoje
 @Composable
 fun MedicationCard(medication: MedicationData) {
     val context = LocalContext.current
@@ -538,6 +570,7 @@ fun MedicationCard(medication: MedicationData) {
                 color = Color.DarkGray
             )
 
+            // Exibe a descrição do medicamento, se houver
             if (medication.description.isNotEmpty()) {
                 Text(
                     text = medication.description,
@@ -567,6 +600,7 @@ fun MedicationCard(medication: MedicationData) {
                     )
                 }
 
+                // Espaço entre as colunas
                 Column {
                     Text(
                         text = "Frequência",
@@ -582,6 +616,7 @@ fun MedicationCard(medication: MedicationData) {
                 }
             }
 
+            // Exibe a data de início e fim, se houver
             if (medication.startDate.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
@@ -591,14 +626,14 @@ fun MedicationCard(medication: MedicationData) {
                 )
             }
 
-            // Action Buttons
+            // Botões de ação
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Edit Button
+                // botão de histórico
                 Button(
                     onClick = {
                         showEditDialog = true
@@ -630,14 +665,14 @@ fun MedicationCard(medication: MedicationData) {
                 }
             }
             
-            // Second row of buttons
+            // segunda linha - Botões de ação
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Taken Button
+                // botão de tomado
                 Button(
                     onClick = {
                         viewModel.markMedicationAsTaken(medication)
@@ -668,7 +703,7 @@ fun MedicationCard(medication: MedicationData) {
                     }
                 }
 
-                // Complete Button
+                // botão de concluído
                 Button(
                     onClick = {
                         viewModel.markMedicationAsCompleted(medication)
@@ -700,7 +735,7 @@ fun MedicationCard(medication: MedicationData) {
                 }
             }
 
-            // Third row - Delete button
+            // botão de eliminar
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -737,7 +772,7 @@ fun MedicationCard(medication: MedicationData) {
                 }
             }
             
-            // Edit Dialog
+            // Diálogo de edição
             if (showEditDialog) {
                 EditMedicationDialog(
                     medication = medication,
@@ -752,6 +787,7 @@ fun MedicationCard(medication: MedicationData) {
     }
 }
 
+// Função auxiliar para obter medicamentos de hoje
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditMedicationDialog(
@@ -766,7 +802,7 @@ fun EditMedicationDialog(
     var startDate by remember { mutableStateOf(medication.startDate) }
     var endDate by remember { mutableStateOf(medication.endDate) }
     
-    // Frequency dropdown options
+    // Opções de frequência
     val frequencyOptions = listOf(
         "Uma vez por dia",
         "Duas vezes por dia", 
@@ -778,7 +814,8 @@ fun EditMedicationDialog(
         "Conforme necessário"
     )
     var frequencyExpanded by remember { mutableStateOf(false) }
-    
+
+    // Diálogo de edição de medicamento
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -809,7 +846,7 @@ fun EditMedicationDialog(
                     )
                 )
                 
-                // Description
+                // Descrição
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
@@ -825,7 +862,7 @@ fun EditMedicationDialog(
                     )
                 )
                 
-                // Dosage
+                // Dosagem
                 OutlinedTextField(
                     value = dosage,
                     onValueChange = { dosage = it },
@@ -841,7 +878,7 @@ fun EditMedicationDialog(
                     )
                 )
                 
-                // Frequency Dropdown
+                // frequência
                 ExposedDropdownMenuBox(
                     expanded = frequencyExpanded,
                     onExpandedChange = { frequencyExpanded = !frequencyExpanded },
@@ -866,7 +903,7 @@ fun EditMedicationDialog(
                             unfocusedBorderColor = Color.Gray
                         )
                     )
-                    
+                    // Menu suspenso para opções de frequência
                     ExposedDropdownMenu(
                         expanded = frequencyExpanded,
                         onDismissRequest = { frequencyExpanded = false }
@@ -883,7 +920,7 @@ fun EditMedicationDialog(
                     }
                 }
                 
-                // Start Date
+                // data de início
                 OutlinedTextField(
                     value = startDate,
                     onValueChange = { newValue ->
@@ -911,7 +948,7 @@ fun EditMedicationDialog(
                     )
                 )
                 
-                // End Date
+                // data de fim
                 OutlinedTextField(
                     value = endDate,
                     onValueChange = { newValue ->
@@ -940,6 +977,7 @@ fun EditMedicationDialog(
                 )
             }
         },
+        // Botões de ação do diálogo
         confirmButton = {
             Button(
                 onClick = {
@@ -960,6 +998,7 @@ fun EditMedicationDialog(
                 Text("Salvar", color = Color.White)
             }
         },
+        // Botão de cancelar
         dismissButton = {
             TextButton(onClick = onDismiss) {
                 Text("Cancelar", color = LightGreen)
@@ -968,6 +1007,7 @@ fun EditMedicationDialog(
     )
 }
 
+// Função auxiliar para obter medicamentos de hoje
 @Composable
 fun HistoryContent(
     userId: String,
@@ -980,6 +1020,7 @@ fun HistoryContent(
 
     val recentHistory by viewModel.getMedicationHistoryByUser(userId).observeAsState(emptyList())
 
+    // Filtra o histórico para os últimos 5 itens
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -999,6 +1040,7 @@ fun HistoryContent(
                     color = LightGreen
                 )
 
+                // Botão para ver todo o histórico, se houver itens recentes
                 if (recentHistory.isNotEmpty()) {
                     TextButton(
                         onClick = onViewFullHistory
@@ -1013,6 +1055,7 @@ fun HistoryContent(
             }
         }
 
+        // Verifica se há histórico recente
         if (recentHistory.isEmpty()) {
             item {
                 Card(
@@ -1049,6 +1092,7 @@ fun HistoryContent(
                     }
                 }
             }
+            // Espaço extra no final da lista
         } else {
             items(recentHistory.take(5)) { historyItem ->
                 HistoryCard(historyItem = historyItem)
@@ -1061,13 +1105,13 @@ fun HistoryContent(
     }
 }
 
-// Helper functions
+// Função auxiliar para obter medicamentos de hoje
 fun getTodayMedications(medications: List<MedicationData>): List<MedicationData> {
     val today = Calendar.getInstance()
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
     return medications.filter { medication ->
-        // Check if medication should be taken today based on start date and frequency
+        // Tenta analisar a data de início e fim do medicamento
         val startDate = try {
             dateFormat.parse(medication.startDate)
         } catch (e: Exception) {
@@ -1082,6 +1126,7 @@ fun getTodayMedications(medications: List<MedicationData>): List<MedicationData>
             }
         } else null
 
+        // Verifica se o medicamento está ativo hoje
         when {
             startDate == null -> false
             endDate != null && today.time.after(endDate) -> false
@@ -1091,6 +1136,7 @@ fun getTodayMedications(medications: List<MedicationData>): List<MedicationData>
     }
 }
 
+// Função auxiliar para obter medicamentos futuros
 fun getUpcomingMedications(medications: List<MedicationData>): List<MedicationData> {
     val today = Calendar.getInstance()
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -1102,6 +1148,7 @@ fun getUpcomingMedications(medications: List<MedicationData>): List<MedicationDa
             null
         }
 
+        // Verifica se a data de início do medicamento é válida e está no futuro
         startDate != null && today.time.before(startDate)
     }.sortedBy { medication ->
         try {
@@ -1112,6 +1159,7 @@ fun getUpcomingMedications(medications: List<MedicationData>): List<MedicationDa
     }
 }
 
+// Função auxiliar para obter medicamentos de hoje
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {

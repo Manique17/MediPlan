@@ -15,19 +15,26 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+// ViewModel para gerenciar o estado das medicações
 class MedicationViewModel(private val repository: Repository) : ViewModel() {
 
+    // Estado para gerenciar o estado das operações de medicação
     private val _medicationState = MutableStateFlow<MedicationState>(MedicationState.Idle)
     val medicationState: StateFlow<MedicationState> = _medicationState.asStateFlow()
 
+    // Funções para obter dados de medicações e histórico de medicações
     fun getMedicationsByUser(userId: String) = repository.getMedicationsByUser(userId).asLiveData(viewModelScope.coroutineContext)
 
+    // Função para obter todas as medicações
     fun getAllMedications() = repository.getAllMedications().asLiveData(viewModelScope.coroutineContext)
 
+    // Função para obter o histórico de medicações por usuário
     fun getMedicationHistoryByUser(userId: String) = repository.getMedicationHistoryByUser(userId).asLiveData(viewModelScope.coroutineContext)
 
+    // Função para obter o histórico de medicações por usuário e tipo de ação
     fun getMedicationHistoryByUserAndType(userId: String, actionType: String) = repository.getMedicationHistoryByUserAndType(userId, actionType).asLiveData(viewModelScope.coroutineContext)
 
+    // Funções para inserir, atualizar e excluir medicações e histórico de medicações
     fun insertMedication(medication: MedicationData) {
         viewModelScope.launch {
             try {
@@ -39,6 +46,7 @@ class MedicationViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
+    // Função para atualizar uma medicação existente
     fun updateMedication(medication: MedicationData) {
         viewModelScope.launch {
             try {
@@ -50,6 +58,7 @@ class MedicationViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
+    // Função para excluir uma medicação
     fun deleteHistoryItem(history: MedicationHistoryData) {
         viewModelScope.launch {
             try {
@@ -61,6 +70,7 @@ class MedicationViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
+    // Função para excluir uma medicação e registrar a ação no histórico
     fun deleteMedication(medication: MedicationData) {
         viewModelScope.launch {
             try {
@@ -87,6 +97,7 @@ class MedicationViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
+    // Função para marcar uma medicação como tomada e registrar a ação no histórico
     fun markMedicationAsTaken(medication: MedicationData) {
         viewModelScope.launch {
             try {
@@ -112,6 +123,7 @@ class MedicationViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
+    // Função para marcar uma medicação como concluída e registrar a ação no histórico
     fun markMedicationAsCompleted(medication: MedicationData) {
         viewModelScope.launch {
             try {
@@ -138,6 +150,7 @@ class MedicationViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
+    // Função para excluir todas as medicações de um usuário
     fun getMedicationById(medicationId: Int, callback: (MedicationData?) -> Unit) {
         viewModelScope.launch {
             try {
@@ -149,10 +162,12 @@ class MedicationViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
+    // Função para excluir todas as medicações de um usuário
     fun resetState() {
         _medicationState.value = MedicationState.Idle
     }
 
+    // Função para redefinir o estado e limpar os dados do usuário
     fun resetStateAndUser(context: Context) {
         _medicationState.value = MedicationState.Idle
         // Limpa dados do usuário no SharedPreferences
@@ -161,6 +176,7 @@ class MedicationViewModel(private val repository: Repository) : ViewModel() {
     }
 }
 
+// Estado para gerenciar o estado das operações de medicação
 sealed class MedicationState {
     object Idle : MedicationState()
     data class Success(val message: String) : MedicationState()

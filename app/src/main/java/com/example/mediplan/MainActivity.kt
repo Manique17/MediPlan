@@ -24,6 +24,7 @@ import com.example.mediplan.ViewModel.Repository
 import com.example.mediplan.ViewModel.UserViewModel
 import com.example.mediplan.ViewModel.SettingsViewModel
 
+// Importando os temas e cores
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +38,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
+// Função principal do aplicativo MediPlan
 @Composable
 fun MediPlanApp() {
     var currentScreen by remember { mutableStateOf("login") }
@@ -45,17 +46,19 @@ fun MediPlanApp() {
 
     val localContext = LocalContext.current // Chamada no escopo @Composable
     
-    // ViewModels
+    // Inicializando o ViewModel do usuário e do tema
     val userViewModel = remember {
         val database = UserDatabase.getDatabase(localContext)
         val repository = Repository(database.dao)
         UserViewModel(repository)
     }
-    
+
+    // Inicializando o ViewModel de configurações
     val settingsViewModel = remember {
         SettingsViewModel(localContext)
     }
 
+    // Observando o estado do tema
     MediPlanTheme(darkTheme = settingsViewModel.isDarkMode) {
         when (currentScreen) {
             "login" -> {
@@ -121,6 +124,7 @@ fun MediPlanApp() {
     }
 }
 
+// Funções de preview para cada tela
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
@@ -140,6 +144,7 @@ fun LoginScreenPreview() {
     }
 }
 
+// Preview para a tela de registro
 @Preview(showBackground = true)
 @Composable
 fun SignUpScreenPreview() {
@@ -158,6 +163,7 @@ fun SignUpScreenPreview() {
     }
 }
 
+// Preview para a tela de redefinição de senha
 @Preview(showBackground = true)
 @Composable
 fun ForgotPasswordScreenPreview() {
@@ -176,6 +182,7 @@ fun ForgotPasswordScreenPreview() {
     }
 }
 
+// Preview para a tela inicial do usuário
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {

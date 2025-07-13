@@ -58,7 +58,8 @@ import com.example.mediplan.ui.components.GradientButton
 import com.example.mediplan.ui.theme.LightGreen
 import com.example.mediplan.ui.theme.White
 
-// Helper function to validate birthdate format (MM/DD/YYYY)
+
+// Função para validar a data de nascimento
 fun isValidBirthdate(birthdate: String): Boolean {
     if (birthdate.isEmpty()) return true
     if (!birthdate.matches(Regex("^\\d{2}/\\d{2}/\\d{4}$"))) return true
@@ -85,6 +86,7 @@ fun isValidBirthdate(birthdate: String): Boolean {
     }
 }
 
+// função composable para a tela de cadastro
 @Composable
 fun SignUpScreen(
     userViewModel: UserViewModel? = null,
@@ -123,6 +125,7 @@ fun SignUpScreen(
         }
     }
 
+    // celecta o estado de sign up do viewModel
     val signUpState by viewModel.signUpState.collectAsState()
     
     // Handle sign up state changes
@@ -140,7 +143,8 @@ fun SignUpScreen(
             }
         }
     }
-    
+
+    // cabeçalho da tela
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -170,7 +174,7 @@ fun SignUpScreen(
                 modifier = Modifier.padding(bottom = 16.dp)
             )
             
-            // Sign Up Form
+            // forma de cadastro
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -192,7 +196,7 @@ fun SignUpScreen(
                         modifier = Modifier.padding(bottom = 24.dp)
                     )
                     
-                    // Full Name Field
+                    // Nome Completo Field
                     AdaptiveOutlinedTextField(
                         value = fullName,
                         onValueChange = { fullName = it },
@@ -208,7 +212,7 @@ fun SignUpScreen(
                         textColor = Color.Black
                     )
                     
-                    // Email Field
+                    // Email
                     AdaptiveOutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
@@ -224,7 +228,7 @@ fun SignUpScreen(
                         textColor = Color.Black
                     )
                     
-                    // Birthdate Field
+                    // data de nascimento
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -250,7 +254,7 @@ fun SignUpScreen(
                         }
                     }
 
-                    // Password Field
+                    // palavra-passe
                     AdaptiveOutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
@@ -278,7 +282,7 @@ fun SignUpScreen(
                         textColor = Color.Black
                     )
                     
-                    // Confirm Password Field
+                    // confirmar palavra-passe
                     AdaptiveOutlinedTextField(
                         value = confirmPassword,
                         onValueChange = { confirmPassword = it },
@@ -306,7 +310,7 @@ fun SignUpScreen(
                         textColor = Color.Black
                     )
                     
-                    // Error Message
+                    // Mensagem de erro
                     if (errorMessage.isNotEmpty()) {
                         Text(
                             text = errorMessage,
@@ -316,7 +320,7 @@ fun SignUpScreen(
                         )
                     }
                     
-                    // Sign Up Button
+                    // butão de cadastro
                     GradientButton(
                         text = if (signUpState is SignUpState.Loading) "CREATING ACCOUNT..." else "SIGN UP",
                         onClick = {
@@ -338,7 +342,7 @@ fun SignUpScreen(
                             .clip(RoundedCornerShape(25.dp))
                     )
                     
-                    // Loading indicator
+                    // Indicador de progresso
                     if (signUpState is SignUpState.Loading) {
                         CircularProgressIndicator(
                             modifier = Modifier.padding(top = 16.dp),
@@ -348,7 +352,7 @@ fun SignUpScreen(
                 }
             }
             
-            // Login Section
+            // login link
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -375,6 +379,7 @@ fun SignUpScreen(
     }
 }
 
+//função preview para a tela de cadastro
 @Composable
 @Preview(showBackground = true)
 fun SignUpScreenPreview() {

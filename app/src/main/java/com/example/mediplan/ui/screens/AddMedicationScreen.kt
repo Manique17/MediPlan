@@ -59,6 +59,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+//ecra de adicionar medicamentos
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddMedicationScreen(
@@ -81,7 +82,7 @@ fun AddMedicationScreen(
     var endDate by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
 
-    // Frequency dropdown options
+    // frequencia das medicações
     val frequencyOptions = listOf(
         "Uma vez por dia",
         "Duas vezes por dia",
@@ -97,7 +98,7 @@ fun AddMedicationScreen(
     val medicationState by viewModel.medicationState.collectAsState()
 
 
-    // Handle medication state changes
+    // obesrvação do estado de medicação
     LaunchedEffect(medicationState) {
         when (medicationState) {
             is MedicationState.Success -> {
@@ -108,19 +109,19 @@ fun AddMedicationScreen(
                 errorMessage = (medicationState as MedicationState.Error).message
             }
             else -> {
-                errorMessage = ""
+                errorMessage = "Não foi possível adicionar o medicamento"
             }
         }
     }
 
-    // Get current date for default start date
+    // data atual para o campo de data de início
     val currentDate = remember {
         val calendar = Calendar.getInstance()
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         dateFormat.format(calendar.time)
     }
 
-    // Set default start date
+    // inicialização do campo de data de início
     LaunchedEffect(Unit) {
         if (startDate.isEmpty()) {
             startDate = currentDate
@@ -132,7 +133,7 @@ fun AddMedicationScreen(
             .fillMaxSize()
             .background(White)
     ) {
-        // Top App Bar
+        // barra de navegação superior
         TopAppBar(
             title = {
                 Text(
@@ -156,7 +157,7 @@ fun AddMedicationScreen(
             )
         )
 
-        // Form Content
+        // conteudo do card
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -177,7 +178,7 @@ fun AddMedicationScreen(
                             .padding(24.dp)
                             .fillMaxWidth()
                     ) {
-                        // ... (outras partes do seu Composable AddMedicationScreen)
+
 
                         Text(
                             text = "Informações do Medicamento",
@@ -204,7 +205,7 @@ fun AddMedicationScreen(
                             textColor = Color.Black // JÁ ESTÁ CORRETO
                         )
 
-                        // Description Field
+                        // Descrição/Indicação do medicamento
                         AdaptiveOutlinedTextField(
                             value = description,
                             onValueChange = { description = it },
@@ -221,7 +222,7 @@ fun AddMedicationScreen(
                             textColor = Color.Black // JÁ ESTÁ CORRETO
                         )
 
-                        // Dosage Field
+                        // Dosagem
                         AdaptiveOutlinedTextField(
                             value = dosage,
                             onValueChange = { dosage = it },
@@ -238,7 +239,7 @@ fun AddMedicationScreen(
                             textColor = Color.Black // JÁ ESTÁ CORRETO
                         )
 
-                        // Frequency Dropdown
+                        // Frequência
                         @OptIn(ExperimentalMaterial3Api::class) // Adicione se não estiver no escopo da função
                         ExposedDropdownMenuBox(
                             expanded = frequencyExpanded,
@@ -269,6 +270,7 @@ fun AddMedicationScreen(
                                 )
                             )
 
+                            // Dropdown Menu para Frequência
                             ExposedDropdownMenu(
                                 expanded = frequencyExpanded,
                                 onDismissRequest = { frequencyExpanded = false }
@@ -285,7 +287,7 @@ fun AddMedicationScreen(
                             }
                         }
 
-                        // Start Date Field
+                        // data de início
                         AdaptiveOutlinedTextField(
                             value = startDate,
                             onValueChange = { newValue ->
@@ -309,7 +311,7 @@ fun AddMedicationScreen(
                             textColor = Color.Black // JÁ ESTÁ CORRETO
                         )
 
-                        // End Date Field
+                        // data de fim (opcional)
                         AdaptiveOutlinedTextField(
                             value = endDate,
                             onValueChange = { newValue ->
@@ -333,7 +335,7 @@ fun AddMedicationScreen(
                             textColor = Color.Black // JÁ ESTÁ CORRETO
                         )
 
-                        // Error Message
+                        // mensagem de erro
                         if (errorMessage.isNotEmpty()) {
                             Text(
                                 text = errorMessage,
@@ -343,7 +345,7 @@ fun AddMedicationScreen(
                             )
                         }
 
-                        // Add Medication Button
+                        // botão de adicionar medicamento
                         GradientButton(
                             text = if (medicationState is MedicationState) "ADICIONANDO..." else "ADICIONAR MEDICAMENTO",
                             onClick = {
@@ -374,7 +376,7 @@ fun AddMedicationScreen(
                                 .clip(RoundedCornerShape(25.dp))
                         )
 
-                        // Loading indicator
+                        // indicador de progresso
                         if (medicationState is MedicationState) {
                             Row(
                                 modifier = Modifier
@@ -394,6 +396,7 @@ fun AddMedicationScreen(
     }
 }
 
+// Preview da tela de adicionar medicamento
 @Preview(showBackground = true)
 @Composable
 fun AddMedicationScreenPreview() {

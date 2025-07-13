@@ -52,6 +52,7 @@ import com.example.mediplan.ui.components.GradientButton
 import com.example.mediplan.ui.theme.LightGreen
 import com.example.mediplan.ui.theme.White // Assuming White is defined in your theme
 
+//função composable para a tela de login
 @Composable
 fun LoginScreen(
     userViewModel: UserViewModel? = null, // ViewModel for user authentication
@@ -59,24 +60,24 @@ fun LoginScreen(
     onSignUpClick: () -> Unit = {}, // Callback to navigate to sign up screen
     onForgotPasswordClick: () -> Unit = {} // Callback to navigate to forgot password screen
 ) {
-    // Get context, database, repository, and ViewModel instances
+    // apanha o contexto atual da aplicação
     val context = LocalContext.current
     val database = UserDatabase.getDatabase(context)
     val repository = Repository(database.dao)
     // Use provided userViewModel or create a new one, remembered across recompositions
     val viewModel = userViewModel ?: remember { UserViewModel(repository) }
 
-    // State variables for email, password, password visibility, and error messages
+    // email palavra-passe e visibilidade da palavra-passe
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
-    // Collect login state from the ViewModel as a Composable state
+    // coleção de estados do ViewModel
     val loginState by viewModel.loginState.collectAsState()
 
-    // LaunchedEffect to handle changes in loginState
-    // This runs when loginState changes its value
+
+    // obeservação do estado de login
     LaunchedEffect(loginState) {
         when (val state = loginState) { // Use 'state' for smart casting
             is LoginState.Success -> {
@@ -103,13 +104,13 @@ fun LoginScreen(
         }
     }
 
-    // Main layout container for the login screen
+    // tela de login entrada email e palavra-passe
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(White) // Set background color for the screen
     ) {
-        // Column to arrange UI elements vertically and center them
+        // conteudo da tela de login
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -126,7 +127,7 @@ fun LoginScreen(
                     .padding(bottom = 16.dp) // Space below the logo
             )
 
-            // App Name Text
+            // Nome do App
             Text(
                 text = "MediPlan",
                 fontSize = 32.sp, // Font size for the app name
@@ -135,7 +136,7 @@ fun LoginScreen(
                 modifier = Modifier.padding(bottom = 32.dp) // Space below the app name
             )
 
-            // Login Form Card
+            // Login Card
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -143,7 +144,7 @@ fun LoginScreen(
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), // Shadow elevation
                 colors = CardDefaults.cardColors(containerColor = White) // Background color of the card
             ) {
-                // Column for elements inside the card
+                // coteudo do card de login
                 Column(
                     modifier = Modifier
                         .padding(24.dp) // Padding inside the card
@@ -159,7 +160,7 @@ fun LoginScreen(
                         modifier = Modifier.padding(bottom = 24.dp) // Space below the text
                     )
 
-                    // Email Input Field
+                    // campo de entrada de email
                     AdaptiveOutlinedTextField( // Custom TextField component
                         value = email,
                         onValueChange = { email = it },
@@ -176,7 +177,7 @@ fun LoginScreen(
                         textColor = Color.Black // Text color for the input
                     )
 
-                    // Password Input Field
+                    // campo de entrada de palavra-passe
                     AdaptiveOutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
@@ -204,7 +205,7 @@ fun LoginScreen(
                         }
                     )
 
-                    // Forgot Password Link
+                    // peder senha link
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End // Align to the end of the row
@@ -218,7 +219,7 @@ fun LoginScreen(
                         }
                     }
 
-                    // Error Message Display
+                    // mensagem de erro
                     if (errorMessage.isNotEmpty()) {
                         Text(
                             text = errorMessage,
@@ -228,7 +229,7 @@ fun LoginScreen(
                         )
                     }
 
-                    // Login Button
+                    // butão de login
                     GradientButton( // Custom button component
                         text = if (loginState is LoginState.Loading) "LOGGING IN..." else "LOGIN", // Dynamic button text
                         onClick = {
@@ -247,7 +248,7 @@ fun LoginScreen(
                             .padding(top = 8.dp) // Space above the login button
                     )
 
-                    // Loading Indicator
+                    // indicador de progresso
                     if (loginState is LoginState.Loading) {
                         CircularProgressIndicator(
                             modifier = Modifier.padding(top = 16.dp), // Space above the indicator
@@ -257,7 +258,7 @@ fun LoginScreen(
                 }
             }
 
-            // Sign Up Section
+            // registro de utilizador
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -282,12 +283,11 @@ fun LoginScreen(
         }
     }
 }
-
+// função de preview para a tela de login
 @Preview(showBackground = true, widthDp = 360, heightDp = 640) // Standard device size for preview
 @Composable
 fun LoginScreenPreview() {
-    // Wrap with your app's theme for accurate preview (if you have one)
-    // MediPlanTheme { // Assuming your theme is MediPlanTheme
+    // tela de login com valores de exemplo
     LoginScreen()
-    // }
+
 }

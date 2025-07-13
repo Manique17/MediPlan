@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+// ViewModel para gerenciar o estado do usuário
 class UserViewModel(private val repository: Repository) : ViewModel() {
 
     private val _currentUser = MutableStateFlow<UserData?>(null)
@@ -25,8 +26,7 @@ class UserViewModel(private val repository: Repository) : ViewModel() {
     private val _resetPasswordState = MutableStateFlow<ResetPasswordState>(ResetPasswordState.Idle)
     val resetPasswordState: StateFlow<ResetPasswordState> = _resetPasswordState.asStateFlow()
 
-
-
+    // Função para obter o usuário atual
     fun insertUser(user: UserData) {
         viewModelScope.launch {
             try {
@@ -38,6 +38,7 @@ class UserViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
+    // Função para fazer login do usuário
     fun loginUser(email: String, password: String) {
         viewModelScope.launch {
             try {
@@ -54,18 +55,20 @@ class UserViewModel(private val repository: Repository) : ViewModel() {
             }
         }
     }
-
+    // Função para redefinir a senha do usuário
     fun signUpUser(name: String, email: String, password: String, dateOfBirth: String) {
         viewModelScope.launch {
             try {
                 _signUpState.value = SignUpState.Loading
 
+                // Validar se o email já existe
                 val existingUser = repository.getUserByEmail(email)
                 if (existingUser != null) {
                     _signUpState.value = SignUpState.Error("User with this email already exists")
                     return@launch
                 }
 
+                // Validar a data de nascimento
                 val newUser = UserData(
                     id = java.util.UUID.randomUUID().toString(),
                     name = name,
@@ -74,6 +77,7 @@ class UserViewModel(private val repository: Repository) : ViewModel() {
                     dateOfBirth = dateOfBirth
                 )
 
+                // Inserir o novo usuário na base de dados
                 repository.insertUser(newUser)
                 _signUpState.value = SignUpState.Success
             } catch (e: Exception) {
@@ -81,7 +85,7 @@ class UserViewModel(private val repository: Repository) : ViewModel() {
             }
         }
     }
-
+    // Função para redefinir a senha do usuário
     fun updateUser(user: UserData) {
         viewModelScope.launch {
             try {
@@ -93,6 +97,7 @@ class UserViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
+    // Função para redefinir a senha do usuário
     fun deleteUser(user: UserData) {
         viewModelScope.launch {
             try {
@@ -101,21 +106,23 @@ class UserViewModel(private val repository: Repository) : ViewModel() {
                 repository.deleteUser(user)
                 _currentUser.value = null
             } catch (e: Exception) {
-                // Handle error
             }
         }
     }
 
+    // Função para fazer logout do usuário
     fun logout() {
         _currentUser.value = null
         _loginState.value = LoginState.Idle
         _signUpState.value = SignUpState.Idle
     }
 
+    // Função para redefinir a senha do usuário
     fun resetLoginState() {
         _loginState.value = LoginState.Idle
     }
 
+    // Função para redefinir o estado de redefinição de senha
     fun resetSignUpState() {
         _signUpState.value = SignUpState.Idle
     }
@@ -123,14 +130,14 @@ class UserViewModel(private val repository: Repository) : ViewModel() {
         }
 
 
-
+// Funções para gerenciar o estado de redefinição de senha
 sealed class LoginState {
     object Idle : LoginState()
     object Loading : LoginState()
     object Success : LoginState()
     data class Error(val message: String) : LoginState()
 }
-
+// Funções para gerenciar o estado de registro de usuário
 sealed class SignUpState {
     object Idle : SignUpState()
     object Loading : SignUpState()
@@ -138,6 +145,7 @@ sealed class SignUpState {
     data class Error(val message: String) : SignUpState()
 }
 
+// Funções para gerenciar o estado de redefinição de senha
 sealed class ResetPasswordState {
     object Idle : ResetPasswordState()
     object Loading : ResetPasswordState()

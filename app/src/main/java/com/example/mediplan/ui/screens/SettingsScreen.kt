@@ -13,12 +13,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.mediplan.ui.theme.White
 import com.example.mediplan.ui.theme.LightGreen
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
 
+//define os ecrãs de configuração do utilizador
 @Composable
 fun SettingsScreen(
     userName: String,
@@ -34,6 +34,7 @@ fun SettingsScreen(
     var confirmPassword by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
 
+    // Ecrã de configurações do utilizador
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -69,7 +70,8 @@ fun SettingsScreen(
                 }
             }
         }
-        
+
+        // Ecrã de conta do utilizador
         item {
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -87,7 +89,7 @@ fun SettingsScreen(
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
-                    
+
                     Button(
                         onClick = { showPasswordDialog = true },
                         modifier = Modifier.fillMaxWidth(),
@@ -95,7 +97,7 @@ fun SettingsScreen(
                     ) {
                         Text("Mudar Palavra-passe", color = Color.White)
                     }
-                    
+
                     Button(
                         onClick = onLogout,
                         modifier = Modifier.fillMaxWidth(),
@@ -103,7 +105,7 @@ fun SettingsScreen(
                     ) {
                         Text("Terminar Sessão", color = Color.White)
                     }
-                    
+
                     Button(
                         onClick = { showDeleteDialog = true },
                         modifier = Modifier.fillMaxWidth(),
@@ -114,11 +116,13 @@ fun SettingsScreen(
                 }
             }
         }
-        
+
+        // Ecrã de aparência do utilizador
         item {
             Spacer(modifier = Modifier.height(16.dp))
         }
-        
+
+        // Ecrã de aparência do utilizador
         item {
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -136,12 +140,13 @@ fun SettingsScreen(
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
-                    
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
+                        // Switch para alternar entre modo claro e escuro
                         Text(
                             text = "Modo Escuro",
                             color = MaterialTheme.colorScheme.onSurface
@@ -159,11 +164,12 @@ fun SettingsScreen(
                 }
             }
         }
-        
+
+        // Espaço entre as seções
         item {
             Spacer(modifier = Modifier.height(16.dp))
         }
-        
+        // Diálogo de mudança de palavra-passe e eliminação de conta
         item {
             if (showPasswordDialog) {
                 ChangePasswordDialog(
@@ -188,6 +194,7 @@ fun SettingsScreen(
             }
         }
 
+        // Diálogo de eliminação de conta
         item {
             if (showDeleteDialog) {
                 DeleteAccountDialog(
@@ -202,6 +209,7 @@ fun SettingsScreen(
     }
 }
 
+// Diálogos para mudar a palavra-passe e eliminar a conta
 @Composable
 private fun ChangePasswordDialog(
     newPassword: String,
@@ -249,6 +257,7 @@ private fun ChangePasswordDialog(
     )
 }
 
+// Diálogo de eliminação de conta
 @Composable
 private fun DeleteAccountDialog(
     onDismiss: () -> Unit,
@@ -256,12 +265,12 @@ private fun DeleteAccountDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { 
+        title = {
             Text(
                 "Eliminar Conta",
                 fontWeight = FontWeight.Bold,
                 color = Color.Red
-            ) 
+            )
         },
         text = {
             Column {
@@ -303,6 +312,7 @@ private fun DeleteAccountDialog(
     )
 }
 
+// Preview da tela de configurações
 @Preview(showBackground = true)
 @Composable
 fun SettingsScreenPreview() {

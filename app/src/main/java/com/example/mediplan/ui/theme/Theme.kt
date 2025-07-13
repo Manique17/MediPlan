@@ -7,6 +7,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
+//define as cores do tema
 private val DarkColorScheme = darkColorScheme(
     primary = DarkGreen,
     secondary = DarkBlue,
@@ -20,6 +21,7 @@ private val DarkColorScheme = darkColorScheme(
     onSurface = White
 )
 
+// Define as cores do tema claro
 private val LightColorScheme = lightColorScheme(
     primary = LightGreen,
     secondary = LightBlue,
@@ -33,6 +35,7 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color(0xFF1C1B1F)
 )
 
+// Define o tema MediPlan
 @Composable
 fun MediPlanTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -44,6 +47,7 @@ fun MediPlanTheme(
         LightColorScheme
     }
 
+    // Define o tema Material com as cores e tipografia
     MaterialTheme(
         colorScheme = colors,
         typography = Typography,

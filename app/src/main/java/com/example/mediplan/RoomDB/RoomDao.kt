@@ -8,38 +8,25 @@ import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
-/**
- * Interface DAO (Data Access Object) para interagir com a base de dados.
- * Define métodos para realizar operações na base de dados (inserir, atualizar, excluir, consultar).
- */
+
 @Dao // Marca esta interface como um DAO para o Room
 interface RoomDao {
 
     // --- Operações relacionadas com Utilizadores (Users) ---
 
-    /**
-     * Insere um novo utilizador na tabela 'users'.
-     * Se um utilizador com o mesmo ID já existir, ele será substituído.
-     */
+
     @Insert(onConflict = OnConflictStrategy.REPLACE) // Insere dados. Se houver conflito (ex: ID igual), substitui.
     suspend fun insertUser(user: UserData) // 'suspend' indica que é uma função de corrotina (para operações assíncronas)
 
-    /**
-     * Atualiza os dados de um utilizador existente.
-     */
+
     @Update // Atualiza dados existentes
     suspend fun updateUser(user: UserData)
 
-    /**
-     * Exclui um utilizador da base de dados.
-     */
+
     @Delete // Exclui dados
     suspend fun deleteUser(user: UserData)
 
-    /**
-     * Procura um utilizador pelo email e password (para login).
-     * Retorna o utilizador encontrado ou 'null' se não encontrar.
-     */
+
     @Query("SELECT * FROM users WHERE email = :email AND password = :password LIMIT 1") // Consulta SQL personalizada
     suspend fun loginUser(email: String, password: String): UserData? // O '?' significa que pode retornar nulo
 

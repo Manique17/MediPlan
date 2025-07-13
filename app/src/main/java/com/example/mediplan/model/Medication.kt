@@ -1,5 +1,6 @@
 package com.example.mediplan.model
 
+// modelo de dados para medicamentos
 data class Medication(
     val id: Int = 0,
     val name: String,
