@@ -187,7 +187,7 @@ fun AddMedicationScreen(
                             modifier = Modifier.padding(bottom = 24.dp)
                         )
 
-                        // Medication Name Field
+                        // Nome de medicação
                         AdaptiveOutlinedTextField(
                             value = medicationName,
                             onValueChange = { medicationName = it },

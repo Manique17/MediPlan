@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -28,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -48,93 +46,105 @@ import com.example.mediplan.ui.components.GradientButton
 import com.example.mediplan.ui.theme.LightGreen
 import com.example.mediplan.ui.theme.White
 
-
+// Função de extensão para o UserViewModel (assumindo que a lógica real está dentro do ViewModel)
 private fun UserViewModel.resetPassword(string: String) {
-
+    // A lógica de redefinição de senha deve ser implementada DENTRO da classe UserViewModel.
+    // Esta função de extensão pode ser uma forma de chamá-la, mas a implementação principal
+    // (ex: chamada ao Firebase Auth, API, etc.) deve estar no ViewModel.
+    // Exemplo: this.initiatePasswordReset(email) // Onde 'this' é o UserViewModel
 }
 
 @Composable
 fun ForgotPasswordScreen(
     userViewModel: UserViewModel? = null,
-    onResetPasswordClick: () -> Unit = {}, // Pode ser usado para navegação após sucesso, se necessário
-    onBackToLoginClick: () -> Unit = {}
+    onResetPasswordClick: () -> Unit = {}, // Callback para navegação ou ação após sucesso (opcional)
+    onBackToLoginClick: () -> Unit = {}  // Callback para voltar ao ecrã de login
 ) {
+    // Obtém o contexto local.
     val context = LocalContext.current
-    // Se UserViewModel é injetado ou provido de forma mais global, use isso.
-    // Caso contrário, a criação aqui é para previews ou casos simples.
+
+    // Configuração do ViewModel:
+    // Utiliza o ViewModel passado como argumento ou cria uma instância local para previews/casos simples.
     val viewModel = userViewModel ?: remember {
         val database = UserDatabase.getDatabase(context)
         val repository = Repository(database.dao)
         UserViewModel(repository)
     }
 
+    // Estados locais para o campo de email e mensagens de feedback.
     var email by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
     var successMessage by remember { mutableStateOf("") }
 
-    val resetPasswordStateValue by viewModel.resetPasswordState.collectAsState() // Renomeado para clareza
+    // Observa o estado da tentativa de redefinição de senha do ViewModel.
+    val resetPasswordStateValue by viewModel.resetPasswordState.collectAsState()
 
-    // Handle reset password state changes
-    LaunchedEffect(resetPasswordStateValue) { // Observar o valor local
-        val currentState = resetPasswordStateValue // Capturar o valor atual
+    // Efeito lançado para reagir a mudanças no estado de redefinição de senha.
+    LaunchedEffect(resetPasswordStateValue) {
+        val currentState = resetPasswordStateValue // Captura o estado atual para smart casting.
         when (currentState) {
             is ResetPasswordState.Success -> {
-                successMessage = currentState.message // Agora o smart cast funciona
-                errorMessage = ""
-                // viewModel.resetPasswordAttemptState() // Opcional: resetar estado no ViewModel após sucesso
-                // onResetPasswordClick() // Opcional: navegar ou realizar outra ação
+                successMessage = currentState.message // Mostra mensagem de sucesso.
+                errorMessage = "" // Limpa mensagem de erro.
+                // Opcional: Chamar onResetPasswordClick() para navegar ou executar outra ação.
             }
             is ResetPasswordState.Error -> {
-                errorMessage = currentState.message // Agora o smart cast funciona
-                successMessage = ""
-                // viewModel.resetPasswordAttemptState() // Opcional: resetar estado no ViewModel após erro
+                errorMessage = currentState.message // Mostra mensagem de erro.
+                successMessage = "" // Limpa mensagem de sucesso.
             }
             ResetPasswordState.Loading -> {
+                // Durante o carregamento, limpa ambas as mensagens.
+                // O indicador de progresso será mostrado no UI.
                 errorMessage = ""
                 successMessage = ""
-                // Geralmente não precisa fazer nada aqui, o UI já mostra o indicador
             }
             ResetPasswordState.Idle -> {
+                // No estado inativo, limpa ambas as mensagens.
                 errorMessage = ""
                 successMessage = ""
             }
         }
     }
 
+    // Estrutura principal do ecrã com um Box.
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(White)
+            .background(White) // Fundo branco.
     ) {
+        // Coluna para organizar os elementos verticalmente e centralizá-los.
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(24.dp), // Padding geral.
+            horizontalAlignment = Alignment.CenterHorizontally, // Centraliza horizontalmente.
+            verticalArrangement = Arrangement.Center // Centraliza verticalmente.
         ) {
+            // Imagem do logo da aplicação.
             Image(
-                painter = painterResource(id = R.drawable.mediplan_logo), // Assumindo que voc&#234; nomeou o arquivo como "mediplan_logo"
+                painter = painterResource(id = R.drawable.mediplan_logo),
                 contentDescription = "MediPlan Logo",
                 modifier = Modifier
-                    .size(120.dp) // Ajustado para um tamanho menor, j&#225; que a imagem &#233; um &#237;cone
-                    .padding(bottom = 32.dp)
+                    .size(120.dp) // Tamanho ajustado.
+                    .padding(bottom = 32.dp) // Espaçamento inferior.
             )
 
-
+            // Cartão para agrupar o formulário de recuperação de senha.
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                colors = CardDefaults.cardColors(containerColor = White)
+                    .padding(horizontal = 16.dp), // Padding horizontal dentro do cartão.
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), // Sombra do cartão.
+                colors = CardDefaults.cardColors(containerColor = White) // Cor de fundo do cartão.
             ) {
+                // Coluna interna do cartão para os elementos do formulário.
                 Column(
                     modifier = Modifier
-                        .padding(24.dp)
+                        .padding(24.dp) // Padding interno do cartão.
                         .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally // Centraliza elementos no cartão.
                 ) {
+                    // Título do ecrã.
                     Text(
                         text = "Recuperar Senha",
                         fontSize = 24.sp,
@@ -143,14 +153,16 @@ fun ForgotPasswordScreen(
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
+                    // Texto instrutivo.
                     Text(
-                        text = "Digite seu email e enviaremos uma nova senha tempor&#225;ria.",
+                        text = "Digite seu email e enviaremos uma nova senha temporária.",
                         fontSize = 14.sp,
                         color = Color.Gray,
                         modifier = Modifier.padding(bottom = 24.dp),
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center // Texto centralizado.
                     )
 
+                    // Campo de texto para o email.
                     AdaptiveOutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
@@ -160,13 +172,14 @@ fun ForgotPasswordScreen(
                             .fillMaxWidth()
                             .padding(bottom = 16.dp),
                         keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Email,
-                            imeAction = ImeAction.Done
+                            keyboardType = KeyboardType.Email, // Teclado para email.
+                            imeAction = ImeAction.Done // Ação "Done" no teclado.
                         ),
-                        singleLine = true,
+                        singleLine = true, // Campo de uma única linha.
                         textColor = Color.Black
                     )
 
+                    // Exibe mensagem de erro, se houver.
                     if (errorMessage.isNotEmpty()) {
                         Text(
                             text = errorMessage,
@@ -177,58 +190,62 @@ fun ForgotPasswordScreen(
                         )
                     }
 
+                    // Exibe mensagem de sucesso, se houver.
                     if (successMessage.isNotEmpty()) {
                         Text(
                             text = successMessage,
-                            color = LightGreen,
+                            color = LightGreen, // Cor verde para sucesso.
                             fontSize = 14.sp,
                             modifier = Modifier.padding(bottom = 16.dp),
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center
                         )
                     }
 
+                    // Botão para enviar o pedido de redefinição de senha.
                     GradientButton(
                         text = "Enviar Email",
                         onClick = {
-                            if (email.isNotEmpty()) {
-                                viewModel.resetPassword(email)
+                            if (email.isNotBlank()) { // Verifica se o email não está em branco.
+                                viewModel.resetPassword(email) // Chama a função do ViewModel.
                             } else {
-                                errorMessage = "Por favor, insira um email v&#225;lido."
+                                errorMessage = "Por favor, insira um email válido." // Mensagem de erro se o email estiver vazio.
                             }
                         },
                         modifier = Modifier
-                            .width(200.dp) // Define uma largura fixa para o bot&#227;o
-                            .height(45.dp) // Reduz a altura do bot&#227;o
+                            .width(200.dp) // Largura fixa.
+                            .height(45.dp) // Altura reduzida.
                             .padding(bottom = 16.dp),
-                        enabled = resetPasswordStateValue !is ResetPasswordState.Loading // Desabilitar bot&#227;o durante o carregamento
+                        enabled = resetPasswordStateValue !is ResetPasswordState.Loading // Desabilita o botão durante o carregamento.
                     )
 
+                    // Exibe indicador de progresso circular durante o carregamento.
                     if (resetPasswordStateValue is ResetPasswordState.Loading) {
                         CircularProgressIndicator(
                             modifier = Modifier.padding(top = 16.dp),
-                            color = LightGreen
+                            color = LightGreen // Cor do indicador.
                         )
                     }
                 }
             }
 
+            // Secção para voltar ao ecrã de login.
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 24.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(top = 24.dp), // Espaçamento superior.
+                horizontalArrangement = Arrangement.Center, // Centraliza horizontalmente.
+                verticalAlignment = Alignment.CenterVertically // Centraliza verticalmente.
             ) {
                 Text(
                     text = "Lembrou da sua senha? ",
                     color = Color.Black,
                     fontSize = 14.sp
                 )
-
+                // Botão de texto para navegar de volta ao login.
                 TextButton(onClick = onBackToLoginClick) {
                     Text(
                         text = "Voltar ao Login",
-                        color = Color.Black, // Ou LightGreen para destaque
+                        color = Color.Black, // Pode ser LightGreen para destaque.
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -238,11 +255,11 @@ fun ForgotPasswordScreen(
     }
 }
 
+// Pré-visualização Composable para o ecrã de recuperação de senha.
 @Composable
 @Preview(showBackground = true)
 fun ForgotPasswordScreenPreview() {
-    // Para o preview, podemos mockar o ViewModel ou usar um estado inicial
-    // Aqui, vamos apenas chamar com o UserViewModel nulo, que far&#225; com que
-    // o Composable crie sua pr&#243;pria inst&#225;ncia (bom para previews isolados).
+    // Para a pré-visualização, o UserViewModel é criado internamente pelo Composable,
+    // o que é útil para visualização isolada.
     ForgotPasswordScreen()
 }

@@ -15,76 +15,92 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp // Adicionado para preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mediplan.ui.theme.LightBlue
 import com.example.mediplan.ui.theme.LightGreen
 import com.example.mediplan.ui.theme.White
 
 
-@Composable
+/**
+ * Um botão com um fundo em gradiente horizontal.
+ * O seu aspeto (opacidade) muda se estiver desativado.
+ */
+@Composable // Indica que esta é uma função de UI
 fun GradientButton(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true // << PARÂMETRO EXISTE E TEM VALOR PADRÃO
+    text: String, // O texto a ser mostrado no botão
+    onClick: () -> Unit, // A ação a ser executada quando o botão é clicado
+    modifier: Modifier = Modifier, // Modificador para estilizar ou dar layout (opcional)
+    enabled: Boolean = true // Se o botão está ativo ou não (opcional, por defeito é ativo)
 ) {
-    // Determina a opacidade baseada no estado 'enabled'
+    // Determina a transparência do conteúdo (gradiente e texto)
+    // Se o botão estiver ativo (enabled = true), opacidade total (1f = 100%)
+    // Se estiver desativado (enabled = false), meia opacidade (0.5f = 50%)
     val contentAlpha = if (enabled) 1f else 0.5f
 
+    // Usa o componente Button do Material 3 como base
     Button(
-        onClick = onClick,
-        modifier = modifier, // O modifier passado (que pode conter .clip, .height, etc.) é aplicado aqui
-        enabled = enabled,   // << PARÂMETRO enabled É USADO AQUI
-        contentPadding = PaddingValues(),
+        onClick = onClick, // Define a ação do clique
+        modifier = modifier, // Aplica quaisquer modificadores passados (ex: tamanho, padding)
+        enabled = enabled, // Define se o botão está ativo ou desativado (afeta o clique e a aparência)
+        contentPadding = PaddingValues(), // Remove o padding interno padrão do botão para que o Box preencha tudo
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent,
-            disabledContainerColor = Color.Transparent // Para manter o fundo do Box visível quando desabilitado
+            containerColor = Color.Transparent, // Cor do contentor do botão fica transparente
+            disabledContainerColor = Color.Transparent // Cor do contentor quando desativado também transparente
+            // Isto é para que o fundo do Box (com o gradiente) seja sempre visível
         )
     ) {
+        // Usa um Box para desenhar o fundo com gradiente e centrar o texto
         Box(
             modifier = Modifier
-                .fillMaxSize() // O Box preenche o espaço do Button. O tamanho real é definido pelo 'modifier' passado para GradientButton
-                .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            LightGreen.copy(alpha = contentAlpha),
-                            LightBlue.copy(alpha = contentAlpha)
+                .fillMaxSize() // Faz o Box preencher todo o espaço disponível dentro do Button
+                .background( // Define o fundo do Box
+                    brush = Brush.horizontalGradient( // Cria um gradiente de cores na horizontal
+                        colors = listOf( // Lista de cores para o gradiente
+                            LightGreen.copy(alpha = contentAlpha), // Verde claro, com a opacidade calculada
+                            LightBlue.copy(alpha = contentAlpha)   // Azul claro, com a opacidade calculada
                         )
                     )
                 ),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center // Alinha o conteúdo do Box (o Text) ao centro
         ) {
+            // Mostra o texto do botão
             Text(
-                text = text,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = White.copy(alpha = contentAlpha)
+                text = text, // O texto a ser exibido
+                fontSize = 16.sp, // Tamanho da fonte
+                fontWeight = FontWeight.Bold, // Estilo da fonte em negrito
+                color = White.copy(alpha = contentAlpha) // Cor do texto branca, com a opacidade calculada
             )
         }
     }
 }
 
-// Previews para testar os estados
-@Preview(showBackground = true)
+// --- Pré-visualizações para o Android Studio ---
+
+/**
+ * Pré-visualização do GradientButton no estado ativo (enabled).
+ */
+@Preview(showBackground = true) // Mostra esta pré-visualização no Android Studio com um fundo
 @Composable
 fun GradientButtonEnabledPreview() {
     GradientButton(
-        text = "ATIVADO",
-        onClick = {},
-        modifier = Modifier.padding(16.dp) // Adiciona padding para visualização
+        text = "ATIVADO", // Texto de exemplo
+        onClick = {}, // Ação de clique vazia para a pré-visualização
+        modifier = Modifier.padding(16.dp) // Adiciona um padding à volta do botão para melhor visualização
     )
 }
 
-@Preview(showBackground = true)
+/**
+ * Pré-visualização do GradientButton no estado desativado (disabled).
+ */
+@Preview(showBackground = true) // Mostra esta pré-visualização no Android Studio com um fundo
 @Composable
 fun GradientButtonDisabledPreview() {
     GradientButton(
-        text = "DESATIVADO",
-        onClick = {},
-        enabled = false,
-        modifier = Modifier.padding(16.dp) // Adiciona padding para visualização
+        text = "DESATIVADO", // Texto de exemplo
+        onClick = {}, // Ação de clique vazia
+        enabled = false, // Define o botão como desativado para esta pré-visualização
+        modifier = Modifier.padding(16.dp) // Adiciona padding para melhor visualização
     )
 }
-
 

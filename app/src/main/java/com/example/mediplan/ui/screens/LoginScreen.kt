@@ -50,137 +50,153 @@ import com.example.mediplan.ViewModel.UserViewModel
 import com.example.mediplan.ui.components.AdaptiveOutlinedTextField
 import com.example.mediplan.ui.components.GradientButton
 import com.example.mediplan.ui.theme.LightGreen
-import com.example.mediplan.ui.theme.White
+import com.example.mediplan.ui.theme.White // Assuming White is defined in your theme
 
 @Composable
 fun LoginScreen(
-    userViewModel: UserViewModel? = null,
-    onLoginClick: (String) -> Unit = {},
-    onSignUpClick: () -> Unit = {},
-    onForgotPasswordClick: () -> Unit = {}
+    userViewModel: UserViewModel? = null, // ViewModel for user authentication
+    onLoginClick: (String) -> Unit = {}, // Callback when login is successful, passing user ID
+    onSignUpClick: () -> Unit = {}, // Callback to navigate to sign up screen
+    onForgotPasswordClick: () -> Unit = {} // Callback to navigate to forgot password screen
 ) {
+    // Get context, database, repository, and ViewModel instances
     val context = LocalContext.current
     val database = UserDatabase.getDatabase(context)
     val repository = Repository(database.dao)
+    // Use provided userViewModel or create a new one, remembered across recompositions
     val viewModel = userViewModel ?: remember { UserViewModel(repository) }
 
+    // State variables for email, password, password visibility, and error messages
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
+    // Collect login state from the ViewModel as a Composable state
     val loginState by viewModel.loginState.collectAsState()
 
-    // Handle login state changes
+    // LaunchedEffect to handle changes in loginState
+    // This runs when loginState changes its value
     LaunchedEffect(loginState) {
-        when (loginState) {
+        when (val state = loginState) { // Use 'state' for smart casting
             is LoginState.Success -> {
+                // On successful login, get current user details
                 val currentUser = viewModel.currentUser.value
                 if (currentUser != null) {
-                    onLoginClick(currentUser.id)
+                    onLoginClick(currentUser.id) // Trigger callback with user ID
                 }
-                viewModel.resetLoginState()
+                viewModel.resetLoginState() // Reset login state in ViewModel
             }
             is LoginState.Error -> {
-                val message = (loginState as LoginState.Error).message
-                Log.d("LogginERROR", message)
-                errorMessage = message
+                // On error, log the error and set the error message to display
+                Log.d("LoginScreen_Error", state.message) // More specific Log tag
+                errorMessage = state.message
             }
-            else -> {
+            is LoginState.Loading -> {
+                // While loading, clear any previous error message
+                errorMessage = ""
+            }
+            LoginState.Idle -> {
+                // In idle state, clear any error message
                 errorMessage = ""
             }
         }
     }
 
+    // Main layout container for the login screen
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(White)
+            .background(White) // Set background color for the screen
     ) {
+        // Column to arrange UI elements vertically and center them
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(24.dp), // Padding around the content
+            horizontalAlignment = Alignment.CenterHorizontally, // Center children horizontally
+            verticalArrangement = Arrangement.Center // Center children vertically
         ) {
-            // Logo and App Name
+            // App Logo
             Image(
-                painter = painterResource(id = R.drawable.mediplan_logo),
+                painter = painterResource(id = R.drawable.mediplan_logo), // Your app logo resource
                 contentDescription = "MediPlan Logo",
                 modifier = Modifier
-                    .size(120.dp)
-                    .padding(bottom = 16.dp)
+                    .size(120.dp) // Size of the logo
+                    .padding(bottom = 16.dp) // Space below the logo
             )
 
+            // App Name Text
             Text(
                 text = "MediPlan",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                color = LightGreen,
-                modifier = Modifier.padding(bottom = 32.dp)
+                fontSize = 32.sp, // Font size for the app name
+                fontWeight = FontWeight.Bold, // Bold font weight
+                color = LightGreen, // Color for the app name text
+                modifier = Modifier.padding(bottom = 32.dp) // Space below the app name
             )
 
-            // Login Form
+            // Login Form Card
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                colors = CardDefaults.cardColors(containerColor = White)
+                    .padding(horizontal = 16.dp), // Horizontal padding for the card
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), // Shadow elevation
+                colors = CardDefaults.cardColors(containerColor = White) // Background color of the card
             ) {
+                // Column for elements inside the card
                 Column(
                     modifier = Modifier
-                        .padding(24.dp)
+                        .padding(24.dp) // Padding inside the card
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    // "Welcome Back" Text
                     Text(
                         text = "Welcome Back",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color.DarkGray,
-                        modifier = Modifier.padding(bottom = 24.dp)
+                        color = Color.DarkGray, // Color for the welcome text
+                        modifier = Modifier.padding(bottom = 24.dp) // Space below the text
                     )
 
-                    // Email Field
-                    AdaptiveOutlinedTextField(
+                    // Email Input Field
+                    AdaptiveOutlinedTextField( // Custom TextField component
                         value = email,
                         onValueChange = { email = it },
                         label = { Text("Email", color = Color.Black) },
-                        placeholder = { Text("Enter your email", color = Color.Black) },
+                        placeholder = { Text("Enter your email", color = Color.Gray) }, // Placeholder text color
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 16.dp),
+                            .padding(bottom = 16.dp), // Space below the email field
                         keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Email,
-                            imeAction = ImeAction.Next
+                            keyboardType = KeyboardType.Email, // Set keyboard type to email
+                            imeAction = ImeAction.Next // Action button on keyboard (e.g., "Next")
                         ),
-                        singleLine = true,
-                        textColor = Color.Black // <-- Define cor preta para o texto digitado
+                        singleLine = true, // Ensure single line input
+                        textColor = Color.Black // Text color for the input
                     )
 
-                    // Password Field
+                    // Password Input Field
                     AdaptiveOutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
                         label = { Text("Password", color = Color.Black) },
-                        placeholder = { Text("Enter your password", color = Color.Black) },
-                        textColor = Color.Black, // <-- Define cor preta para o texto digitado
+                        placeholder = { Text("Enter your password", color = Color.Gray) },
+                        textColor = Color.Black,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 8.dp),
-                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                            .padding(bottom = 8.dp), // Space below the password field
+                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(), // Toggle password visibility
                         keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password,
-                            imeAction = ImeAction.Done
+                            keyboardType = KeyboardType.Password, // Set keyboard type to password
+                            imeAction = ImeAction.Done // Action button on keyboard (e.g., "Done")
                         ),
                         singleLine = true,
-                        trailingIcon = {
+                        trailingIcon = { // Icon to toggle password visibility
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                                 Icon(
                                     painter = painterResource(
-                                        id = if (passwordVisible) R.drawable.ic_visibility_off else R.drawable.ic_visibility
+                                        id = if (passwordVisible) R.drawable.ic_visibility_off else R.drawable.ic_visibility // Icons for visibility
                                     ),
                                     contentDescription = if (passwordVisible) "Hide password" else "Show password"
                                 )
@@ -188,51 +204,54 @@ fun LoginScreen(
                         }
                     )
 
-                    // Forgot Password
+                    // Forgot Password Link
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
+                        horizontalArrangement = Arrangement.End // Align to the end of the row
                     ) {
-                        TextButton(onClick = onForgotPasswordClick) {
+                        TextButton(onClick = onForgotPasswordClick) { // Navigate on click
                             Text(
                                 text = "Forgot Password?",
-                                color = LightGreen,
+                                color = LightGreen, // Color for the link text
                                 fontSize = 14.sp
                             )
                         }
                     }
 
-                    // Error Message
+                    // Error Message Display
                     if (errorMessage.isNotEmpty()) {
                         Text(
                             text = errorMessage,
-                            color = Color.Red,
+                            color = Color.Red, // Error messages in red
                             fontSize = 14.sp,
-                            modifier = Modifier.padding(bottom = 16.dp)
+                            modifier = Modifier.padding(vertical = 8.dp) // Vertical padding for error message
                         )
                     }
 
                     // Login Button
-                    GradientButton(
-                        text = if (loginState is LoginState.Loading) "LOGGING IN..." else "LOGIN",
+                    GradientButton( // Custom button component
+                        text = if (loginState is LoginState.Loading) "LOGGING IN..." else "LOGIN", // Dynamic button text
                         onClick = {
+                            // Basic validation before attempting login
                             if (email.isNotBlank() && password.isNotBlank()) {
-                                viewModel.loginUser(email, password)
+                                viewModel.loginUser(email, password) // Call ViewModel to log in
                             } else {
-                                errorMessage = "Please fill in all fields"
+                                errorMessage = "Please fill in all fields." // Show error if fields are empty
                             }
                         },
+                        enabled = loginState !is LoginState.Loading, // Disable button during loading
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp)
-                            .clip(RoundedCornerShape(25.dp))
+                            .clip(RoundedCornerShape(25.dp)) // Rounded corners for the button
+                            .padding(top = 8.dp) // Space above the login button
                     )
 
-                    // Loading indicator
+                    // Loading Indicator
                     if (loginState is LoginState.Loading) {
                         CircularProgressIndicator(
-                            modifier = Modifier.padding(top = 16.dp),
-                            color = LightGreen
+                            modifier = Modifier.padding(top = 16.dp), // Space above the indicator
+                            color = LightGreen // Color for the progress indicator
                         )
                     }
                 }
@@ -242,7 +261,7 @@ fun LoginScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 24.dp),
+                    .padding(top = 32.dp), // Increased space above the sign-up section
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -251,13 +270,12 @@ fun LoginScreen(
                     color = Color.Black,
                     fontSize = 14.sp
                 )
-
-                TextButton(onClick = onSignUpClick) {
+                TextButton(onClick = onSignUpClick) { // Navigate to sign up on click
                     Text(
                         text = "Sign Up",
-                        color = Color.Black,
+                        color = LightGreen, // Sign up link color matching theme
                         fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold // Make "Sign Up" bold
                     )
                 }
             }
@@ -265,8 +283,11 @@ fun LoginScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, widthDp = 360, heightDp = 640) // Standard device size for preview
 @Composable
 fun LoginScreenPreview() {
+    // Wrap with your app's theme for accurate preview (if you have one)
+    // MediPlanTheme { // Assuming your theme is MediPlanTheme
     LoginScreen()
+    // }
 }

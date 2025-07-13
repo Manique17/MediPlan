@@ -22,6 +22,7 @@ import com.example.mediplan.ui.theme.MediPlanTheme
 import com.example.mediplan.UserDatabase
 import com.example.mediplan.ViewModel.Repository
 import com.example.mediplan.ViewModel.UserViewModel
+import com.example.mediplan.ViewModel.SettingsViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,38 +40,23 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MediPlanApp() {
-    val initialDarkTheme = isSystemInDarkTheme()
-    var isDarkMode by remember { mutableStateOf(initialDarkTheme) } // (1) ESTADO PRINCIPAL
-
-    // ... outros estados e viewModel ...
-
-    MediPlanTheme(darkTheme = isDarkMode) { // (2) TEMA USA O ESTADO
-        val currentScreen = null
-        when (currentScreen) {
-            // ...
-            "home" -> {
-                HomeScreen(
-                    // ... outros parâmetros ...
-                    isDarkMode = isDarkMode,          // (3) ESTADO É PASSADO PARA A HOME
-                    onThemeChange = { newThemeState -> // (4) CALLBACK PARA MUDAR O ESTADO
-                        isDarkMode = newThemeState
-                    }
-                )
-            }
-        }
-    }
-
     var currentScreen by remember { mutableStateOf("login") }
     var currentUserId by remember { mutableStateOf<String?>(null) }
 
     val localContext = LocalContext.current // Chamada no escopo @Composable
+    
+    // ViewModels
     val userViewModel = remember {
-        val database = UserDatabase.getDatabase(localContext) // Usar a variável localContext
+        val database = UserDatabase.getDatabase(localContext)
         val repository = Repository(database.dao)
         UserViewModel(repository)
     }
+    
+    val settingsViewModel = remember {
+        SettingsViewModel(localContext)
+    }
 
-    MediPlanTheme(darkTheme = isDarkMode) {
+    MediPlanTheme(darkTheme = settingsViewModel.isDarkMode) {
         when (currentScreen) {
             "login" -> {
                 LoginScreen(
@@ -127,8 +113,8 @@ fun MediPlanApp() {
                         currentUserId = null
                         currentScreen = "login"
                     },
-                    isDarkMode = isDarkMode,
-                    onThemeChange = { isDarkMode = it }
+                    isDarkMode = settingsViewModel.isDarkMode,
+                    onThemeChange = { newTheme -> settingsViewModel.setTheme(newTheme) }
                 )
             }
         }
