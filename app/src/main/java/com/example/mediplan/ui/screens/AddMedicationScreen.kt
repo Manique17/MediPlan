@@ -111,6 +111,11 @@ fun AddMedicationScreen(
             MedicationState.Idle -> {
                 errorMessage = ""
             }
+            MedicationState.Loading -> {
+                // Handle loading state if needed
+                // For example, you might want to show a loading indicator
+                // or disable user interactions while loading
+            }
         }
     }
 
