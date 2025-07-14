@@ -9,6 +9,6 @@ Histórico de Medicações: Acompanhe seu histórico de uso de medicamentos, per
 Eliminar Histórico: Opção para limpar o histórico de uso, caso necessário.
 Benefícios:
 
-Organização: Mantenha o controle de todos os seus medicamentos em um só lugar.
+Organização: Mantenha o controlo de todos os seus medicamentos em um só lugar.
 Simplicidade: Interface amigável e fácil de usar.
 Controle: Acompanhe seu tratamento com precisão.
