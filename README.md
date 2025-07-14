@@ -1,4 +1,4 @@
-MediPlan: Seu aplicativo para gerenciamento de medicamentos
+MediPlan: A sua aplicação para gerenciamento de medicamentos
 MediPlan é um aplicativo Android desenvolvido em Kotlin para ajudar você a controlar seus medicamentos de forma simples e eficiente. Com uma interface intuitiva, você poderá adicionar suas medicações, definindo a dosagem, frequência e horários de administração.
 
 Funcionalidades Principais:
