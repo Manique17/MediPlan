@@ -38,6 +38,7 @@ class MedicationViewModel(private val repository: Repository) : ViewModel() {
     fun insertMedication(medication: MedicationData) {
         viewModelScope.launch {
             try {
+                _medicationState.value = MedicationState.Loading
                 repository.insertMedication(medication)
                 _medicationState.value = MedicationState.Success("Medication added successfully")
             } catch (e: Exception) {
@@ -179,6 +180,7 @@ class MedicationViewModel(private val repository: Repository) : ViewModel() {
 // Estado para gerenciar o estado das operações de medicação
 sealed class MedicationState {
     object Idle : MedicationState()
+    object Loading : MedicationState()
     data class Success(val message: String) : MedicationState()
     data class Error(val message: String) : MedicationState()
 }

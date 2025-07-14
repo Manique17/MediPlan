@@ -108,8 +108,8 @@ fun AddMedicationScreen(
             is MedicationState.Error -> {
                 errorMessage = (medicationState as MedicationState.Error).message
             }
-            else -> {
-                errorMessage = "Não foi possível adicionar o medicamento"
+            MedicationState.Idle -> {
+                errorMessage = ""
             }
         }
     }
@@ -347,7 +347,7 @@ fun AddMedicationScreen(
 
                         // botão de adicionar medicamento
                         GradientButton(
-                            text = if (medicationState is MedicationState) "ADICIONANDO..." else "ADICIONAR MEDICAMENTO",
+                            text = if (medicationState is MedicationState.Loading) "ADICIONANDO..." else "ADICIONAR MEDICAMENTO",
                             onClick = {
                                 when {
                                     medicationName.isBlank() -> errorMessage = "Por favor, insira o nome do medicamento"
@@ -357,6 +357,7 @@ fun AddMedicationScreen(
                                     startDate.length != 10 -> errorMessage = "Por favor, insira uma data válida"
                                     endDate.isNotEmpty() && endDate.length != 10 -> errorMessage = "Por favor, insira uma data de fim válida"
                                     else -> {
+                                        errorMessage = "" // Limpa mensagem de erro antes de tentar adicionar
                                         val medication = MedicationData(
                                             medName = medicationName,
                                             description = description,
@@ -377,7 +378,7 @@ fun AddMedicationScreen(
                         )
 
                         // indicador de progresso
-                        if (medicationState is MedicationState) {
+                        if (medicationState is MedicationState.Loading) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
