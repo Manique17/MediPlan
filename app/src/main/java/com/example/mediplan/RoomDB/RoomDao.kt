@@ -44,6 +44,20 @@ interface RoomDao {
     @Query("SELECT * FROM users WHERE id = :userId LIMIT 1")
     suspend fun getUserById(userId: String): UserData?
 
+    /**
+     * Obtém todos os utilizadores da base de dados.
+     * Retorna uma lista de todos os utilizadores.
+     */
+    @Query("SELECT * FROM users")
+    suspend fun getAllUsers(): List<UserData>
+
+    /**
+     * Conta o número total de utilizadores.
+     * Retorna o número total de utilizadores na base de dados.
+     */
+    @Query("SELECT COUNT(*) FROM users")
+    suspend fun getUsersCount(): Int
+
     // --- Operações relacionadas com Medicações (Medications) ---
 
     /**
@@ -125,5 +139,12 @@ interface RoomDao {
      */
     @Query("DELETE FROM medication_history WHERE userId = :userId")
     suspend fun deleteAllHistoryForUser(userId: String)
+
+    /**
+     * Conta o número total de registos de histórico.
+     * Retorna o número total de registos na tabela de histórico.
+     */
+    @Query("SELECT COUNT(*) FROM medication_history")
+    suspend fun getHistoryCount(): Int
 }
 

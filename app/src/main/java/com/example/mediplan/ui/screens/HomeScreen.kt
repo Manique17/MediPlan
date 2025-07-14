@@ -104,6 +104,7 @@ fun HomeScreen(
     var selectedTab by remember { mutableStateOf(0) }
     var showAddMedication by remember { mutableStateOf(false) }
     var showHistory by remember { mutableStateOf(false) }
+    var showDebug by remember { mutableStateOf(false) }
 
     // Coloca o utilizador atual no estado
     var currentUser by remember { mutableStateOf<com.example.mediplan.RoomDB.UserData?>(null) }
@@ -142,6 +143,8 @@ fun HomeScreen(
             userId = userId,
             onBackClick = { showHistory = false }
         )
+    } else if (showDebug) {
+        DatabaseDebugScreen()
     } else {
         Scaffold(
             topBar = {
@@ -303,7 +306,8 @@ fun HomeScreen(
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
-                        }
+                        },
+                        onShowDebug = { showDebug = true }
                     )
                 }
             }

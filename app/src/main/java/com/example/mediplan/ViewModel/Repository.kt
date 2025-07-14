@@ -174,5 +174,29 @@ class Repository(private val dao: RoomDao) {
     suspend fun deleteMedicationHistory(history: MedicationHistoryData) {
         dao.deleteMedicationHistory(history)
     }
+
+    /**
+     * Obtém todos os utilizadores da base de dados.
+     * @return Uma lista de [UserData].
+     */
+    suspend fun getAllUsers(): List<UserData> {
+        return dao.getAllUsers()
+    }
+
+    /**
+     * Conta o número total de registos de histórico.
+     * @return O número total de registos de histórico.
+     */
+    suspend fun getHistoryCount(): Int {
+        return dao.getHistoryCount()
+    }
+
+    /**
+     * Conta o número total de utilizadores.
+     * @return O número total de utilizadores.
+     */
+    suspend fun getUsersCount(): Int {
+        return dao.getUsersCount()
+    }
     //endregion
 }

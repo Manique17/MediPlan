@@ -37,7 +37,8 @@ fun SettingsScreen(
     onThemeChange: (Boolean) -> Unit,
     onChangePassword: (newPassword: String) -> Unit, // Modificado para passar a nova password
     onLogout: () -> Unit,
-    onDeleteAccount: () -> Unit
+    onDeleteAccount: () -> Unit,
+    onShowDebug: () -> Unit = {}
 ) {
     // Não cries UserViewModel nem Repository aqui
     // val context = LocalContext.current
@@ -395,6 +396,15 @@ fun SettingsScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                     ) {
                         Text("Eliminar Conta", color = MaterialTheme.colorScheme.onError)
+                    }
+
+                    // Botão de Debug (temporário)
+                    Button(
+                        onClick = onShowDebug,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
+                    ) {
+                        Text("Debug Base de Dados", color = Color.White)
                     }
                 }
             }
