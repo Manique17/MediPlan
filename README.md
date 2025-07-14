@@ -3,7 +3,7 @@ MediPlan é um aplicativo Android desenvolvido em Kotlin para ajudar você a con
 
 Funcionalidades Principais:
 
-Adicionar Medicação: Cadastre seus medicamentos com facilidade, especificando a dosagem, a frequência de ingestão (e.g., a cada 8 horas, 2 vezes ao dia) e os horários personalizados para cada dose.
+Adicionar Medicação: Registe os seus medicamentos com facilidade, especificando a dosagem, a frequência de ingestão (e.g., a cada 8 horas, 2 vezes ao dia) e os horários personalizados para cada dose.
 Gerenciamento de Horários: Receba lembretes para tomar seus medicamentos nos horários programados, evitando atrasos e esquecimentos.
 Histórico de Medicações: Acompanhe seu histórico de uso de medicamentos, permitindo uma visão geral do seu tratamento.
 Eliminar Histórico: Opção para limpar o histórico de uso, caso necessário.
